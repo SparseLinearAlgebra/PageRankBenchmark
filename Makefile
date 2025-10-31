@@ -5,16 +5,18 @@ BUILD := $(GRAPH_BLAS_PATH)/build
 LAGRAPH_BUILD := $(LAGRAPH_PATH)/build
 JOBS := $(shell nproc)
 
-all: build lagraph
-build: $(BUILD)
-	cd $(GRAPH_BLAS_PATH) && \
+build: graphblas lagraph src
+graphblas: 
+	mkdir -p $(BUILD) && \
+	cd $(GRAPH_BLAS_PATH)  &&\
 	cmake -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
 	      -DCMAKE_BUILD_TYPE=Release \
 	      -G Ninja -B build
 	cmake --build $(BUILD) --parallel $(JOBS)
 
-lagraph: $(LAGRAPH_BUILD)
-	cd $(LAGRAPH_PATH) && \
+lagraph: 
+	mkdir -p $(LAGRAPH_BUILD) && \
+	cd $(LAGRAPH_PATH)  && \
 	cmake -DGraphBLAS_DIR=$(BUILD) \
 	      -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
 	      -DCMAKE_BUILD_TYPE=Release \
@@ -22,7 +24,10 @@ lagraph: $(LAGRAPH_BUILD)
 	cmake --build $(LAGRAPH_BUILD) --parallel $(JOBS)
 
 clean:
-	rm -rf $(BUILD) $(LAGRAPH_BUILD)
+	rm -rf $(BUILD)/* $(LAGRAPH_BUILD)/* ./build
+src:
+	mkdir -p build
+	gcc src/main.c     -I./vendor/GraphBLAS/Include     -I./vendor/LAGraph/include     -L./vendor/LAGraph/build/src     -L./vendor/GraphBLAS/build     -llagraph -lgraphblas     -o build/main
 
-.PHONY: all build lagraph clean
+.PHONY: all build lagraph clean src
 
