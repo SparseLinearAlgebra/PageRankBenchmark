@@ -48,7 +48,7 @@ typedef struct EdgeTX
     uint32_t count;
 } EdgeTX;
 
-// operations TODO
+// operations TODO TODO TODO !!!
 
 void tx_add(EdgeTX *z, EdgeTX *x, EdgeTX *y)
 {
@@ -61,6 +61,12 @@ void owns_add(EdgeOwns *z, EdgeOwns *x, EdgeOwns *y)
 }
 void owns_mul(EdgeOwns *z, EdgeOwns *x, EdgeOwns *y)
 {
+}
+void check_user_age(bool *z, const User *x, GrB_Index _i, GrB_Index _j, const uint8_t *y) // EdgeOwns
+{
+    {
+        *z = (x->age > *y);
+    }
 }
 
 int main()
@@ -75,8 +81,11 @@ int main()
     printf("GraphBLAS initialized.\n");
     LAGraph_Init(msg);
     printf("LAGraph initialized.\n\n");
+    // GxB_Global_Option_set(GxB_BURBLE, true);
 
+    // ------------------------------------------------------------------------
     // init edge matrices
+    // ------------------------------------------------------------------------
 
     // custom types for edges
     GrB_Type tx_edge, owns_edge;
@@ -98,25 +107,25 @@ int main()
     GrB_Monoid tx_monoid;
     GrB_Semiring tx_semiring;
     EdgeTX tx_edge_id;
-    info = GrB_BinaryOp_new(&tx_plus, (GxB_binary_function)&tx_add, tx_edge, tx_edge, tx_edge);
+    info = GrB_BinaryOp_new(&tx_plus, (GxB_binary_function)&tx_add, tx_edge, tx_edge, tx_edge); // TODO
     if (info != GrB_SUCCESS)
     {
         fprintf(stderr, "failed to create \"tx_plus\" binop\n");
         return 1;
     }
-    info = GrB_BinaryOp_new(&tx_mult, (GxB_binary_function)&tx_mul, tx_edge, tx_edge, tx_edge);
+    info = GrB_BinaryOp_new(&tx_mult, (GxB_binary_function)&tx_mul, tx_edge, tx_edge, tx_edge); // TODO
     if (info != GrB_SUCCESS)
     {
         fprintf(stderr, "failed to create \"tx_mult\" binop\n");
         return 1;
     }
-    info = GrB_Monoid_new(&tx_monoid, tx_plus, (void *)&tx_edge_id);
+    info = GrB_Monoid_new(&tx_monoid, tx_plus, (void *)&tx_edge_id); // TODO
     if (info != GrB_SUCCESS)
     {
         fprintf(stderr, "failed to create \"tx\" monoud\n");
         return 1;
     }
-    info = GrB_Semiring_new(&tx_semiring, tx_monoid, tx_mult);
+    info = GrB_Semiring_new(&tx_semiring, tx_monoid, tx_mult); // TODO
     if (info != GrB_SUCCESS)
     {
         fprintf(stderr, "failed to create \"tx\" semiring\n");
@@ -127,25 +136,25 @@ int main()
     GrB_Monoid owns_monoid;
     GrB_Semiring owns_semiring;
     EdgeOwns owns_edge_id;
-    info = GrB_BinaryOp_new(&owns_plus, (GxB_binary_function)&owns_add, owns_edge, owns_edge, owns_edge);
+    info = GrB_BinaryOp_new(&owns_plus, (GxB_binary_function)&owns_add, owns_edge, owns_edge, owns_edge); // TODO
     if (info != GrB_SUCCESS)
     {
         fprintf(stderr, "failed to create \"owns_plus\" binop\n");
         return 1;
     }
-    info = GrB_BinaryOp_new(&owns_mult, (GxB_binary_function)&owns_mul, owns_edge, owns_edge, owns_edge);
+    info = GrB_BinaryOp_new(&owns_mult, (GxB_binary_function)&owns_mul, owns_edge, owns_edge, owns_edge); // TODO
     if (info != GrB_SUCCESS)
     {
         fprintf(stderr, "failed to create \"tx_mult\" binop\n");
         return 1;
     }
-    info = GrB_Monoid_new(&owns_monoid, owns_plus, (void *)&owns_edge_id);
+    info = GrB_Monoid_new(&owns_monoid, owns_plus, (void *)&owns_edge_id); // TODO
     if (info != GrB_SUCCESS)
     {
         fprintf(stderr, "failed to create \"owns\" monoid\n");
         return 1;
     }
-    info = GrB_Semiring_new(&owns_semiring, owns_monoid, owns_mult);
+    info = GrB_Semiring_new(&owns_semiring, owns_monoid, owns_mult); // TODO
     if (info != GrB_SUCCESS)
     {
         fprintf(stderr, "failed to create \"tx\" semiring\n");
@@ -235,9 +244,13 @@ int main()
         return 1;
     }
 
+    // ------------------------------------------------------------------------
     // init vetrices vectors
+    // ------------------------------------------------------------------------
+
     GrB_Type user, card;
     info = GrB_Type_new(&user, sizeof(User));
+
     if (info != GrB_SUCCESS)
     {
         fprintf(stderr, "failed to create \"user\" type\n");
@@ -249,6 +262,7 @@ int main()
         fprintf(stderr, "failed to create \"card\" type\n");
         return 1;
     }
+
     // 1 - 4 --- users
     GrB_Vector users;
     info = GrB_Vector_new(&users, user, VERTICES_NUMBER);
@@ -285,7 +299,8 @@ int main()
         fprintf(stderr, "failed to insert \"user4\" in vector\n");
         return 1;
     }
-    // // 5 - 9 --- cards
+
+    // 5 - 9 --- cards
     GrB_Vector cards;
     info = GrB_Vector_new(&cards, card, VERTICES_NUMBER);
     if (info != GrB_SUCCESS)
@@ -329,72 +344,170 @@ int main()
         return 1;
     }
 
-    // build filters
-    // GrB_Index width, height;
-    // GrB_Matrix_nrows(&height, call_edges_mat);
-    // GrB_Matrix_ncols(&width, call_edges_mat);
+    // ------------------------------------------------------------------------
+    // build user filters
+    // ------------------------------------------------------------------------
 
-    // // all matrices are squared so let n be a dimension
-    // GrB_Index n = width;
+    // vertex filter: we will take only prersons over 30 and exclude cards with `mastercard` payment system
+    GrB_Matrix ID;
+    GrB_Vector v;
+    info = GrB_Vector_new(&v, GrB_BOOL, VERTICES_NUMBER);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to create \"ID\" vector\n");
+        return 1;
+    }
+    info = GrB_Vector_assign_BOOL(v, NULL, NULL, false, GrB_ALL, VERTICES_NUMBER, NULL);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to assign values to \"v\" vector\n");
+        return 1;
+    }
 
-    // // vertex filter: we will take only prersons over 30 and exclude cards with `mastercard` payment system
-    // GrB_Matrix ID;
-    // GrB_Vector v;
-    // GrB_Vector_new(&v, GrB_BOOL, n);
-    // GrB_Vector_assign_BOOL(v, NULL, NULL, true, GrB_ALL, n, NULL);
+    // create selector
+    GrB_IndexUnaryOp user_age;
+    info = GrB_IndexUnaryOp_new(&user_age, (GxB_index_unary_function)&check_user_age, GrB_BOOL, user, GrB_UINT8); // TODO
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to create \"user_age\" unop\n");
+        return 1;
+    }
+    uint8_t age = 30;
+    info = GrB_Vector_apply_IndexOp_UDT(v, NULL, NULL, user_age, users, &age, NULL);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to select elements from users vector: %d\n", info);
+        return 1;
+    }
+    GxB_print(v, GxB_COMPLETE);
+    GrB_Matrix v_mat, id_mat;
+    GrB_Matrix_new(&v_mat, GrB_BOOL,VERTICES_NUMBER,1);
+    GrB_Col_assign(v_mat,NULL,NULL,v,GrB_ALL,VERTICES_NUMBER,0,NULL);
 
-    // GrB_Index size = 0;
-    // GrB_Index *zeros = malloc(n * sizeof(GrB_Index));
-    // // GrB_select !!!
-    // for (size_t i = 0; i < 4; i++)
-    // {
-    //     if (users[i].age > 30)
-    //     {
-    //         GrB_Info e = GrB_Vector_setElement_BOOL(v, false, i);
-    //     }
-    // }
+    GrB_Vector id;
+    info = GrB_Vector_new(&id, GrB_BOOL, VERTICES_NUMBER);
+    info = GrB_Vector_assign_BOOL(id, NULL, NULL, true, GrB_ALL, VERTICES_NUMBER, NULL);
+    GrB_Matrix_new(&id_mat, GrB_BOOL,1,VERTICES_NUMBER);
+    GrB_Row_assign(id_mat,NULL,NULL,id,0,GrB_ALL,VERTICES_NUMBER,NULL);
 
-    // free(zeros);
-    // GrB_Matrix_diag(&ID, v, 0);
+    GrB_Matrix kron;
+    GrB_Matrix_new(&kron,GrB_BOOL,VERTICES_NUMBER,VERTICES_NUMBER);
+    GxB_print(v_mat, GxB_COMPLETE);
+    GxB_print(id_mat, GxB_COMPLETE);
+    info = GrB_kronecker(kron, NULL, NULL, GrB_LAND, v_mat, id_mat, NULL);
+    // info = GrB_Matrix_diag(&ID, v, 0);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to create filter matrix %d\n", info);
+        return 1;
+    }
 
-    // // DEBUG
-    // printf("filter matrix content: \n");
-    // for (GrB_Index i = 0; i < n; i++)
+    // DEBUG
+    printf("filter matrix content: \n");
+     for (GrB_Index i = 0; i < VERTICES_NUMBER; i++)
+        for (GrB_Index j = 0; j < VERTICES_NUMBER; j++)
+        {
+            bool val;
+            GrB_Info info = GrB_Matrix_extractElement_BOOL(&val, kron, i, j);
+            if (info == GrB_SUCCESS)
+            {
+                printf("[%lu,%lu] = %d\n", i, j, val);
+            }
+            else if (info == GrB_NO_VALUE)
+            {
+                printf("[%lu,%lu] no value\n", i, j);
+            }
+            else
+            {
+                printf("[%lu,%lu] error code: %d\n", i, j, info);
+            }
+        }
+    // for (GrB_Index i = 0; i < VERTICES_NUMBER; i++)
     // {
     //     bool val;
-    //     GrB_Info info = GrB_Matrix_extractElement_BOOL(&val, ID, i, i);
+    //     GrB_Info info = GrB_Matrix_extractElement_BOOL(&val, kron, i, i);
     //     if (info == GrB_SUCCESS)
     //     {
     //         printf("[%lu,%lu] = %d\n", i, i, val);
     //     }
+    //     else if (info == GrB_NO_VALUE)
+    //     {
+    //         printf("[%lu,%lu] no value\n", i, i);
+    //     }
     //     else
     //     {
-    //         printf("[%lu,%lu] error\n", i, i);
+    //         printf("[%lu,%lu] error code: %d\n", i, i, info);
     //     }
     // }
 
-    // // apply filters
+    // ------------------------------------------------------------------------
+    // apply user filters
+    // ------------------------------------------------------------------------
 
-    // // verices filter
-    // // фильтр только owns фильтруем с одной стороны (исходящие ребра) (поправить рисунок)
-    // GrB_Matrix owns_mat_filtered;
-    // // M x ID
-    // GrB_mxm(owns_mat_filtered,NULL,NULL,GxB_ANY_PAIR_BOOL,call_edges_mat,ID,NULL);
-    // // ID x M
-    // GrB_mxm(owns_mat_filtered,NULL,NULL,GxB_ANY_PAIR_BOOL,ID,call_edges_mat,NULL); // A*
-    // // в итоге получаем ребра исходящие из отобранных пользователем
+    // verices filter
+    // фильтр только owns фильтруем с одной стороны (исходящие ребра) (поправить рисунок)
+    GrB_Matrix owns_mat_filtered;
+    GrB_Matrix_new(&owns_mat_filtered,owns_edge,VERTICES_NUMBER,VERTICES_NUMBER);
+    printf("\nowns edge mat before filter\n");
+    for (GrB_Index i = 0; i < VERTICES_NUMBER; i++)
+        for (GrB_Index j = 0; j < VERTICES_NUMBER; j++)
+        {
+            EdgeOwns val;
+            GrB_Info info = GrB_Matrix_extractElement_UDT(&val, owns_edge_mat, i, j);
+            if (info == GrB_SUCCESS)
+            {
+                printf("[%lu,%lu] = %d\n", i, j, val.days);
+            }
+            // else if (info == GrB_NO_VALUE)
+            // {
+            //     printf("[%lu,%lu] no value\n", i, j);
+            // }
+            // else
+            // {
+            //     printf("[%lu,%lu] error code: %d\n", i, j, info);
+            // }
+        }
+    // apply filter
+    info = GrB_Matrix_assign(owns_mat_filtered, kron, NULL, owns_edge_mat, GrB_ALL, VERTICES_NUMBER, GrB_ALL, VERTICES_NUMBER, NULL);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to apply filter to owns matrix %d\n", info);
+        return 1;
+    }
+    printf("\nowns edge mat after filter\n");
+    for (GrB_Index i = 0; i < VERTICES_NUMBER; i++)
+        for (GrB_Index j = 0; j < VERTICES_NUMBER; j++)
+        {
+            EdgeOwns val;
+            GrB_Info info = GrB_Matrix_extractElement_UDT(&val, owns_mat_filtered, i, j);
+            if (info == GrB_SUCCESS)
+            {
+                printf("[%lu,%lu] = %d\n", i, j, val.days);
+            }
+            // else if (info == GrB_NO_VALUE)
+            // {
+            //     printf("[%lu,%lu] no value\n", i, j);
+            // }
+            // else
+            // {
+            //     printf("[%lu,%lu] error code: %d\n", i, j, info);
+            // }
+        }
+    // в итоге получаем ребра исходящие из отобранных пользователем
 
     // /*--------------------------- PART 2 --------------------------*/
 
     // теперь нужно взять карты (редукция по строчкам или по столбцам)
     // редуцируем карты (строим вектор карты, которые относятся к отфильтрованным пользователем )
+
     // строим ID матрицу
+
     // ID с двух сторон на матрицу транзакций
     // получили подграф на нужных транзакциях
+
     // теперь строим матрицу для pagerank (пункт ниже). softmax. (посмотреть как можно сделать не по дебильному с помощью GB)
     /// снова редуцируем по строчкам , получаем знаменатель softmax
     /// 2
-    // build matrix M'
 
     // run pagerank
 }
