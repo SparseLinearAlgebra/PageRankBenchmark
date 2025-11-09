@@ -447,9 +447,6 @@ int main()
     // ------------------------------------------------------------------------
     // apply user filters
     // ------------------------------------------------------------------------
-
-    // verices filter
-    // фильтр только owns фильтруем с одной стороны (исходящие ребра) (поправить рисунок)
     GrB_Matrix owns_mat_filtered;
     GrB_Matrix_new(&owns_mat_filtered, owns_edge, VERTICES_NUMBER, VERTICES_NUMBER);
     printf("\nowns edge mat before filter\n");
@@ -497,9 +494,13 @@ int main()
             //     printf("[%lu,%lu] error code: %d\n", i, j, info);
             // }
         }
-    // в итоге получаем ребра исходящие из отобранных пользователем
 
     // /*--------------------------- PART 2 --------------------------*/
+
+    // ------------------------------------------------------------------------
+    // get cards of filtered users
+    // ------------------------------------------------------------------------
+    
     GrB_Vector filtered_cards;
     info = GrB_Vector_new(&filtered_cards, owns_edge, VERTICES_NUMBER);
     if (info != GrB_SUCCESS)
@@ -532,6 +533,10 @@ int main()
     }
     GxB_print(filtered_cards, GxB_COMPLETE);
 
+    // ------------------------------------------------------------------------
+    // build filter for tx matrix
+    // ------------------------------------------------------------------------
+
     GrB_Vector bool_vec;
     info = GrB_Vector_new(&bool_vec, GrB_BOOL, VERTICES_NUMBER);
     if (info != GrB_SUCCESS)
@@ -545,13 +550,130 @@ int main()
         fprintf(stderr, "failed to fill id vector for filtered cards %d\n", info);
         return 1;
     }
-    GxB_print(bool_vec, GxB_COMPLETE);
+    // GxB_print(bool_vec, GxB_COMPLETE);
 
-    // строим ID матрицу
+    GrB_Matrix v_mat2, id_mat2;
+    info = GrB_Matrix_new(&v_mat2, GrB_BOOL, VERTICES_NUMBER, 1);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to create v_mat2 matrix %d\n", info);
+        return 1;
+    }
+    info = GrB_Col_assign(v_mat2, NULL, NULL, bool_vec, GrB_ALL, VERTICES_NUMBER, 0, NULL);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to assign col to v_mat2 %d\n", info);
+        return 1;
+    }
 
-    // ID с двух сторон на матрицу транзакций
-    // получили подграф на нужных транзакциях
+    GrB_Vector id2;
+    info = GrB_Vector_new(&id2, GrB_BOOL, VERTICES_NUMBER);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to create id2 vector %d\n", info);
+        return 1;
+    }
+    info = GrB_Vector_assign_BOOL(id2, NULL, NULL, true, GrB_ALL, VERTICES_NUMBER, NULL);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to assign bools to id2 mat %d\n", info);
+        return 1;
+    }
+    info = GrB_Matrix_new(&id_mat2, GrB_BOOL, 1, VERTICES_NUMBER);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to create id_mat2 %d\n", info);
+        return 1;
+    }
+    info = GrB_Row_assign(id_mat2, NULL, NULL, id2, 0, GrB_ALL, VERTICES_NUMBER, NULL);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to assign row to id_mat2 %d\n", info);
+        return 1;
+    }
 
+    GrB_Matrix kron2, kronT;
+    info = GrB_Matrix_new(&kron2, GrB_BOOL, VERTICES_NUMBER, VERTICES_NUMBER);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to create kron2 %d\n", info);
+        return 1;
+    }
+    info = GrB_Matrix_new(&kronT, GrB_BOOL, VERTICES_NUMBER, VERTICES_NUMBER);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to create kronT %d\n", info);
+        return 1;
+    }
+    // GxB_print(v_mat2, GxB_COMPLETE);
+    // GxB_print(id_mat2, GxB_COMPLETE);
+
+    info = GrB_kronecker(kron2, NULL, NULL, GrB_LAND, v_mat2, id_mat2, NULL);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to do kronecker product for kron2 %d\n", info);
+        return 1;
+    }
+
+    GrB_Matrix id_matT;
+    info = GrB_Matrix_new(&id_matT, GrB_BOOL, VERTICES_NUMBER, 1);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to create id_matT %d\n", info);
+        return 1;
+    }
+    info = GrB_Col_assign(id_matT, NULL, NULL, id2, GrB_ALL, VERTICES_NUMBER, 0, NULL);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to assign col in id_matT %d\n", info);
+        return 1;
+    }
+
+    GrB_Matrix v_matT;
+    info = GrB_Matrix_new(&v_matT, GrB_BOOL, 1, VERTICES_NUMBER);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to create v_matT %d\n", info);
+        return 1;
+    }
+    info = GrB_Row_assign(v_matT, NULL, NULL, bool_vec, 0, GrB_ALL, VERTICES_NUMBER, NULL);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to assign row to v_matT %d\n", info);
+        return 1;
+    }
+
+    info = GrB_kronecker(kronT, NULL, NULL, GrB_LAND, id_matT, v_matT, NULL);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to do kronecker product for kronT %d\n", info);
+        return 1;
+    }
+
+    // GxB_print(kron2, GxB_COMPLETE);
+    // GxB_print(kronT, GxB_COMPLETE);
+
+    // ------------------------------------------------------------------------
+    // apply cards filter to tx matrix
+    // ------------------------------------------------------------------------
+    GrB_Matrix tx_mat_filtered;
+    GrB_Matrix_new(&tx_mat_filtered, tx_edge, VERTICES_NUMBER, VERTICES_NUMBER);
+    info = GrB_Matrix_assign(tx_mat_filtered, kron2, NULL, tx_edge_mat, GrB_ALL, VERTICES_NUMBER, GrB_ALL, VERTICES_NUMBER, NULL);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to assign kron2 to tx_edge_mat %d\n", info);
+        return 1;
+    }
+    
+    info = GrB_Matrix_assign(tx_mat_filtered, kronT, NULL, tx_edge_mat, GrB_ALL, VERTICES_NUMBER, GrB_ALL, VERTICES_NUMBER, NULL);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to assign kronT to tx_edge_mat %d\n", info);
+        return 1;
+    }
+    GxB_print(tx_mat_filtered, GxB_COMPLETE);
+
+    
     // теперь строим матрицу для pagerank (пункт ниже). softmax. (посмотреть как можно сделать не по дебильному с помощью GB)
     /// снова редуцируем по строчкам , получаем знаменатель softmax
     /// 2
