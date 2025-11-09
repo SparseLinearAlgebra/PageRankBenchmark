@@ -27,7 +27,7 @@ clean:
 	rm -rf $(BUILD)/* $(LAGRAPH_BUILD)/* ./build
 src:
 	mkdir -p build
-	gcc src/main.c     -I./vendor/GraphBLAS/Include     -I./vendor/LAGraph/include     -L./vendor/LAGraph/build/src     -L./vendor/GraphBLAS/build     -llagraph -lgraphblas     -o build/main
+	gcc src/main.c     -I./vendor/GraphBLAS/Include     -I./vendor/LAGraph/include     -L./vendor/LAGraph/build/src     -L./vendor/GraphBLAS/build     -llagraph -lgraphblas  -lm   -o build/main
 
 .PHONY: all build lagraph clean src
 
