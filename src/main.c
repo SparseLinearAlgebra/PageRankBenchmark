@@ -4,8 +4,7 @@
 #include "../vendor/LAGraph/include/LAGraph.h"
 #include "../vendor/LAGraph/include/LAGraphX.h"
 
-#define VERTICES_NUMBER 9
-#define EDGES_NUBMER 12
+#define VERTICES_NUMBER 12
 char msg[LAGRAPH_MSG_LEN];
 
 typedef enum
@@ -48,29 +47,60 @@ typedef struct EdgeTX
     uint32_t count;
 } EdgeTX;
 
-// operations TODO TODO TODO !!!
-void owns_or_bool(EdgeOwns *z, const EdgeOwns *_x, const EdgeOwns *_y)
-{
-    *z = *_x;
-}
-
-void tx_add(EdgeTX *z, EdgeTX *x, EdgeTX *y)
-{
-}
-void tx_mul(EdgeTX *z, EdgeTX *x, EdgeTX *y)
-{
-}
-void owns_add(EdgeOwns *z, EdgeOwns *x, EdgeOwns *y)
-{
-}
-void owns_mul(EdgeOwns *z, EdgeOwns *x, EdgeOwns *y)
-{
-}
 void check_user_age(bool *z, const User *x, GrB_Index _i, GrB_Index _j, const uint8_t *y) // EdgeOwns
 {
     {
         *z = (x->age > *y);
     }
+}
+
+void owns_bool_mult(bool *z, const bool *x, const EdgeOwns *y)
+{
+    *z = *x;
+}
+
+void owns_bool_add(bool *z, const bool *x, const bool *y)
+{
+    *z = (*x || *y);
+}
+
+void tx_bool_mult(EdgeTX *z, const bool *x, const EdgeTX *y)
+{
+    if (*x)
+        *z = *y;
+    else
+        z->sum = 0, z->count = 0;
+}
+
+void tx_bool_mult_right(EdgeTX *z, const EdgeTX *x, const bool *y)
+{
+    if (*y)
+        *z = *x;
+    else
+        z->sum = 0, z->count = 0;
+}
+
+void tx_bool_add(EdgeTX *z, const EdgeTX *x, const EdgeTX *y)
+{
+    if (x->count > 0 || y->count > 0)
+        *z = (x->count > 0) ? *x : *y;
+    else
+        z->sum = 0, z->count = 0;
+}
+
+void tx_is_nonempty(bool *z, const EdgeTX *x)
+{
+    *z = (x->count != 0);
+}
+
+void exp_binop(double *z, const double *x)
+{
+    *z = exp(*x);
+}
+
+void F_op(double *z, const EdgeTX *x)
+{
+    *z = log(x->sum);
 }
 
 int main()
@@ -85,7 +115,6 @@ int main()
     printf("GraphBLAS initialized.\n");
     LAGraph_Init(msg);
     printf("LAGraph initialized.\n\n");
-    // GxB_Global_Option_set(GxB_BURBLE, true);
 
     // ------------------------------------------------------------------------
     // init edge matrices
@@ -106,65 +135,6 @@ int main()
         return 1;
     }
 
-    // monoid and semiring
-    GrB_BinaryOp tx_plus, tx_mult;
-    GrB_Monoid tx_monoid;
-    GrB_Semiring tx_semiring;
-    EdgeTX tx_edge_id;
-    info = GrB_BinaryOp_new(&tx_plus, (GxB_binary_function)&tx_add, tx_edge, tx_edge, tx_edge); // TODO
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to create \"tx_plus\" binop\n");
-        return 1;
-    }
-    info = GrB_BinaryOp_new(&tx_mult, (GxB_binary_function)&tx_mul, tx_edge, tx_edge, tx_edge); // TODO
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to create \"tx_mult\" binop\n");
-        return 1;
-    }
-    info = GrB_Monoid_new(&tx_monoid, tx_plus, (void *)&tx_edge_id); // TODO
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to create \"tx\" monoud\n");
-        return 1;
-    }
-    info = GrB_Semiring_new(&tx_semiring, tx_monoid, tx_mult); // TODO
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to create \"tx\" semiring\n");
-        return 1;
-    }
-
-    GrB_BinaryOp owns_plus, owns_mult;
-    GrB_Monoid owns_monoid;
-    GrB_Semiring owns_semiring;
-    EdgeOwns owns_edge_id;
-    info = GrB_BinaryOp_new(&owns_plus, (GxB_binary_function)&owns_add, owns_edge, owns_edge, owns_edge); // TODO
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to create \"owns_plus\" binop\n");
-        return 1;
-    }
-    info = GrB_BinaryOp_new(&owns_mult, (GxB_binary_function)&owns_mul, owns_edge, owns_edge, owns_edge); // TODO
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to create \"tx_mult\" binop\n");
-        return 1;
-    }
-    info = GrB_Monoid_new(&owns_monoid, owns_plus, (void *)&owns_edge_id); // TODO
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to create \"owns\" monoid\n");
-        return 1;
-    }
-    info = GrB_Semiring_new(&owns_semiring, owns_monoid, owns_mult); // TODO
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to create \"tx\" semiring\n");
-        return 1;
-    }
-
     // edge decomposition
 
     GrB_Matrix tx_edge_mat, owns_edge_mat;
@@ -182,10 +152,21 @@ int main()
     }
 
     // fill tx_mat
-    EdgeTX edge56 = {56, 2223412.0};
-    EdgeTX edge59 = {59, 6223412.0};
-    EdgeTX edge67 = {67, 8913212.0};
-    EdgeTX edge69 = {69, 92223412.0};
+    EdgeTX edge56 = {2223412.0, 56};
+    EdgeTX edge59 = {6223412.0, 59};
+    EdgeTX edge67 = {8913212.0, 67};
+    EdgeTX edge69 = {92223412.0, 69};
+    EdgeTX edge65 = {133214.1, 65};
+    EdgeTX edge95 = {1267325.99, 95};
+    EdgeTX edge611 = {1999999.1, 611};
+    EdgeTX edge116 = {6999999.1, 116};
+    EdgeTX edge511 = {9999999.1, 511};
+    EdgeTX edge115 = {8999999.1, 115};
+    EdgeTX edge127 = {8999999.1, 127};
+    EdgeTX edge712 = {8999999.1, 712};
+    EdgeTX edge912 = {899999999.1, 912};
+    EdgeTX edge129 = {99999999.1, 129};
+
     info = GrB_Matrix_setElement_UDT(tx_edge_mat, &edge56, 4, 5);
     if (info != GrB_SUCCESS)
     {
@@ -210,13 +191,74 @@ int main()
         fprintf(stderr, "failed to insert \"edge69\" in matrix\n");
         return 1;
     }
-
+    info = GrB_Matrix_setElement_UDT(tx_edge_mat, &edge65, 5, 4);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to insert \"edge69\" in matrix\n");
+        return 1;
+    }
+    info = GrB_Matrix_setElement_UDT(tx_edge_mat, &edge95, 8, 4);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to insert \"edge69\" in matrix\n");
+        return 1;
+    }
+    info = GrB_Matrix_setElement_UDT(tx_edge_mat, &edge611, 5, 10);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to insert \"edge69\" in matrix\n");
+        return 1;
+    }
+    info = GrB_Matrix_setElement_UDT(tx_edge_mat, &edge116, 10, 5);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to insert \"edge69\" in matrix\n");
+        return 1;
+    }
+    info = GrB_Matrix_setElement_UDT(tx_edge_mat, &edge511, 4, 10);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to insert \"edge69\" in matrix\n");
+        return 1;
+    }
+    info = GrB_Matrix_setElement_UDT(tx_edge_mat, &edge115, 10, 4);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to insert \"edge69\" in matrix\n");
+        return 1;
+    }
+    info = GrB_Matrix_setElement_UDT(tx_edge_mat, &edge127, 11, 6);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to insert \"edge69\" in matrix\n");
+        return 1;
+    }
+    info = GrB_Matrix_setElement_UDT(tx_edge_mat, &edge712, 6, 11);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to insert \"edge69\" in matrix\n");
+        return 1;
+    }
+    info = GrB_Matrix_setElement_UDT(tx_edge_mat, &edge912, 8, 11);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to insert \"edge69\" in matrix\n");
+        return 1;
+    }
+    info = GrB_Matrix_setElement_UDT(tx_edge_mat, &edge129, 11, 8);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to insert \"edge69\" in matrix\n");
+        return 1;
+    }
     // fill owns_mat
     EdgeOwns edge45 = {45};
     EdgeOwns edge36 = {36};
     EdgeOwns edge19 = {19};
     EdgeOwns edge27 = {27};
     EdgeOwns edge28 = {28};
+    EdgeOwns edge1011 = {21};
+    EdgeOwns edge1012 = {22};
     info = GrB_Matrix_setElement_UDT(owns_edge_mat, &edge45, 3, 4);
     if (info != GrB_SUCCESS)
     {
@@ -247,9 +289,21 @@ int main()
         fprintf(stderr, "failed to insert \"edge28\" in matrix\n");
         return 1;
     }
+    info = GrB_Matrix_setElement_UDT(owns_edge_mat, &edge1011, 9, 10);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to insert \"edge1011\" in matrix\n");
+        return 1;
+    }
+    info = GrB_Matrix_setElement_UDT(owns_edge_mat, &edge1012, 9, 11);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to insert \"edge1011\" in matrix\n");
+        return 1;
+    }
 
     // ------------------------------------------------------------------------
-    // init vetrices vectors
+    // init vertices vectors
     // ------------------------------------------------------------------------
 
     GrB_Type user, card;
@@ -267,7 +321,7 @@ int main()
         return 1;
     }
 
-    // 1 - 4 --- users
+    // 1 - 4 & 10 --- users
     GrB_Vector users;
     info = GrB_Vector_new(&users, user, VERTICES_NUMBER);
     if (info != GrB_SUCCESS)
@@ -275,10 +329,11 @@ int main()
         fprintf(stderr, "failed to create \"users\" vector\n");
         return 1;
     }
-    User user1 = {MALE, 25};
-    User user2 = {MALE, 52};
-    User user3 = {FEMALE, 19};
+    User user1 = {MALE, 52};
+    User user2 = {MALE, 25};
+    User user3 = {FEMALE, 40};
     User user4 = {MALE, 42};
+    User user10 = {MALE, 35};
     info = GrB_Vector_setElement_UDT(users, &user1, 0);
     if (info != GrB_SUCCESS)
     {
@@ -303,8 +358,14 @@ int main()
         fprintf(stderr, "failed to insert \"user4\" in vector\n");
         return 1;
     }
+    info = GrB_Vector_setElement_UDT(users, &user10, 9);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to insert \"user4\" in vector\n");
+        return 1;
+    }
 
-    // 5 - 9 --- cards
+    // 5 - 9 & 11 - 12 --- cards
     GrB_Vector cards;
     info = GrB_Vector_new(&cards, card, VERTICES_NUMBER);
     if (info != GrB_SUCCESS)
@@ -317,6 +378,8 @@ int main()
     Card card7 = {VISA, 800000.0};
     Card card8 = {MASTERCARD, 900000.0};
     Card card9 = {MASTERCARD, 10000000.0};
+    Card card11 = {MASTERCARD, 99000000.0};
+    Card card12 = {MASTERCARD, 99000000.0};
     info = GrB_Vector_setElement_UDT(cards, &card5, 4);
     if (info != GrB_SUCCESS)
     {
@@ -342,6 +405,18 @@ int main()
         return 1;
     }
     info = GrB_Vector_setElement_UDT(cards, &card9, 8);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to insert \"card9\" in vector\n");
+        return 1;
+    }
+    info = GrB_Vector_setElement_UDT(cards, &card11, 10);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to insert \"card9\" in vector\n");
+        return 1;
+    }
+    info = GrB_Vector_setElement_UDT(cards, &card12, 11);
     if (info != GrB_SUCCESS)
     {
         fprintf(stderr, "failed to insert \"card9\" in vector\n");
@@ -384,27 +459,27 @@ int main()
         return 1;
     }
     GxB_print(v, GxB_COMPLETE);
-    GrB_Matrix v_mat, id_mat;
-    GrB_Matrix_new(&v_mat, GrB_BOOL, VERTICES_NUMBER, 1);
-    GrB_Col_assign(v_mat, NULL, NULL, v, GrB_ALL, VERTICES_NUMBER, 0, NULL);
-
-    GrB_Vector id;
-    info = GrB_Vector_new(&id, GrB_BOOL, VERTICES_NUMBER);
-    info = GrB_Vector_assign_BOOL(id, NULL, NULL, true, GrB_ALL, VERTICES_NUMBER, NULL);
-    GrB_Matrix_new(&id_mat, GrB_BOOL, 1, VERTICES_NUMBER);
-    GrB_Row_assign(id_mat, NULL, NULL, id, 0, GrB_ALL, VERTICES_NUMBER, NULL);
-
-    GrB_Matrix kron;
-    GrB_Matrix_new(&kron, GrB_BOOL, VERTICES_NUMBER, VERTICES_NUMBER);
-    GxB_print(v_mat, GxB_COMPLETE);
-    GxB_print(id_mat, GxB_COMPLETE);
-    info = GrB_kronecker(kron, NULL, NULL, GrB_LAND, v_mat, id_mat, NULL);
-    // info = GrB_Matrix_diag(&ID, v, 0);
+    info = GrB_Matrix_diag(&ID, v, 0);
     if (info != GrB_SUCCESS)
     {
         fprintf(stderr, "failed to create filter matrix %d\n", info);
         return 1;
     }
+    // GrB_Matrix v_mat, id_mat;
+    // GrB_Matrix_new(&v_mat, GrB_BOOL, VERTICES_NUMBER, 1);
+    // GrB_Col_assign(v_mat, NULL, NULL, v, GrB_ALL, VERTICES_NUMBER, 0, NULL);
+
+    // GrB_Vector id;
+    // info = GrB_Vector_new(&id, GrB_BOOL, VERTICES_NUMBER);
+    // info = GrB_Vector_assign_BOOL(id, NULL, NULL, true, GrB_ALL, VERTICES_NUMBER, NULL);
+    // GrB_Matrix_new(&id_mat, GrB_BOOL, 1, VERTICES_NUMBER);
+    // GrB_Row_assign(id_mat, NULL, NULL, id, 0, GrB_ALL, VERTICES_NUMBER, NULL);
+
+    // GrB_Matrix kron;
+    // GrB_Matrix_new(&kron, GrB_BOOL, VERTICES_NUMBER, VERTICES_NUMBER);
+    // // GxB_print(v_mat, GxB_COMPLETE);
+    // // GxB_print(id_mat, GxB_COMPLETE);
+    // info = GrB_kronecker(kron, NULL, NULL, GrB_LAND, v_mat, id_mat, NULL);
 
     // DEBUG
     printf("filter matrix content: \n");
@@ -412,19 +487,19 @@ int main()
         for (GrB_Index j = 0; j < VERTICES_NUMBER; j++)
         {
             bool val;
-            GrB_Info info = GrB_Matrix_extractElement_BOOL(&val, kron, i, j);
+            GrB_Info info = GrB_Matrix_extractElement_BOOL(&val, ID, i, j);
             if (info == GrB_SUCCESS)
             {
                 printf("[%lu,%lu] = %d\n", i, j, val);
             }
-            else if (info == GrB_NO_VALUE)
-            {
-                printf("[%lu,%lu] no value\n", i, j);
-            }
-            else
-            {
-                printf("[%lu,%lu] error code: %d\n", i, j, info);
-            }
+            // else if (info == GrB_NO_VALUE)
+            // {
+            //     printf("[%lu,%lu] no value\n", i, j);
+            // }
+            // else
+            // {
+            //     printf("[%lu,%lu] error code: %d\n", i, j, info);
+            // }
         }
     // for (GrB_Index i = 0; i < VERTICES_NUMBER; i++)
     // {
@@ -447,8 +522,39 @@ int main()
     // ------------------------------------------------------------------------
     // apply user filters
     // ------------------------------------------------------------------------
+    GrB_BinaryOp bool_add_op;
+    info = GrB_BinaryOp_new(&bool_add_op, (GxB_binary_function)&owns_bool_add, GrB_BOOL, GrB_BOOL, GrB_BOOL);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to create owns bool add binop %d\n", info);
+        return 1;
+    }
+    GrB_BinaryOp owns_bool_mul_op;
+    info = GrB_BinaryOp_new(&owns_bool_mul_op, (GxB_binary_function)&owns_bool_mult, GrB_BOOL, GrB_BOOL, owns_edge);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to create owns bool mul binop %d\n", info);
+        return 1;
+    }
+
+    GrB_Monoid owns_bool_monoid;
+    bool owns_bool_identity = false;
+    info = GrB_Monoid_new_BOOL(&owns_bool_monoid, bool_add_op, (void *)&owns_bool_identity);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to create owns bool monoid %d\n", info);
+        return 1;
+    }
+
+    // GrB_Monoid any_monoid;
+    // EdgeOwns ownsID = {1};
+    // GrB_Monoid_new_UDT(&any_monoid, any_op, (void *)&ownsID);
+
+    GrB_Semiring owns_semiring_bool;
+    GrB_Semiring_new(&owns_semiring_bool, owns_bool_monoid, owns_bool_mul_op);
+
     GrB_Matrix owns_mat_filtered;
-    GrB_Matrix_new(&owns_mat_filtered, owns_edge, VERTICES_NUMBER, VERTICES_NUMBER);
+    GrB_Matrix_new(&owns_mat_filtered, GrB_BOOL, VERTICES_NUMBER, VERTICES_NUMBER);
     printf("\nowns edge mat before filter\n");
     for (GrB_Index i = 0; i < VERTICES_NUMBER; i++)
         for (GrB_Index j = 0; j < VERTICES_NUMBER; j++)
@@ -469,7 +575,8 @@ int main()
             // }
         }
     // apply filter
-    info = GrB_Matrix_assign(owns_mat_filtered, kron, NULL, owns_edge_mat, GrB_ALL, VERTICES_NUMBER, GrB_ALL, VERTICES_NUMBER, NULL);
+    // info = GrB_Matrix_assign(owns_mat_filtered, kron, NULL, owns_edge_mat, GrB_ALL, VERTICES_NUMBER, GrB_ALL, VERTICES_NUMBER, NULL);
+    info = GrB_mxm(owns_mat_filtered, NULL, NULL, owns_semiring_bool, ID, owns_edge_mat, NULL);
     if (info != GrB_SUCCESS)
     {
         fprintf(stderr, "failed to apply filter to owns matrix %d\n", info);
@@ -495,188 +602,220 @@ int main()
             // }
         }
 
-    // /*--------------------------- PART 2 --------------------------*/
-
     // ------------------------------------------------------------------------
     // get cards of filtered users
     // ------------------------------------------------------------------------
-    
+
     GrB_Vector filtered_cards;
-    info = GrB_Vector_new(&filtered_cards, owns_edge, VERTICES_NUMBER);
+    info = GrB_Vector_new(&filtered_cards, GrB_BOOL, VERTICES_NUMBER);
     if (info != GrB_SUCCESS)
     {
         fprintf(stderr, "failed to create filtered cards vector %d\n", info);
         return 1;
     }
-
-    GrB_BinaryOp ownsedge_bool;
-    info = GrB_BinaryOp_new(&ownsedge_bool, (GxB_binary_function)&owns_or_bool, owns_edge, owns_edge, owns_edge);
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to create binop ownsedge_bool %d\n", info);
-        return 1;
-    }
-    bool identity = false;
-    GrB_Monoid ownsedge_any_bool;
-    info = GrB_Monoid_new(&ownsedge_any_bool, ownsedge_bool, (void *)&identity);
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to create monoid ownsedge_any_bool %d\n", info);
-        return 1;
-    }
     GxB_print(owns_mat_filtered, GxB_COMPLETE);
-    info = GrB_Matrix_reduce_Monoid(filtered_cards, NULL, NULL, ownsedge_any_bool, owns_mat_filtered, GrB_DESC_T0);
+    info = GrB_Matrix_reduce_Monoid(filtered_cards, NULL, NULL, GrB_LOR_MONOID_BOOL, owns_mat_filtered, GrB_DESC_T0);
     if (info != GrB_SUCCESS)
     {
         fprintf(stderr, "failed to filter cards %d\n", info);
         return 1;
     }
-    GxB_print(filtered_cards, GxB_COMPLETE);
 
     // ------------------------------------------------------------------------
     // build filter for tx matrix
     // ------------------------------------------------------------------------
-
-    GrB_Vector bool_vec;
-    info = GrB_Vector_new(&bool_vec, GrB_BOOL, VERTICES_NUMBER);
+    GrB_Matrix_free(&ID);
+    info = GrB_Matrix_diag(&ID, filtered_cards, 0);
     if (info != GrB_SUCCESS)
     {
-        fprintf(stderr, "failed to create id vector for filtered cards %d\n", info);
+        fprintf(stderr, "failed to create filter matrix %d\n", info);
         return 1;
     }
-    info = GrB_assign(bool_vec, filtered_cards, NULL, true, GrB_ALL, VERTICES_NUMBER, GrB_DESC_S);
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to fill id vector for filtered cards %d\n", info);
-        return 1;
-    }
-    // GxB_print(bool_vec, GxB_COMPLETE);
-
-    GrB_Matrix v_mat2, id_mat2;
-    info = GrB_Matrix_new(&v_mat2, GrB_BOOL, VERTICES_NUMBER, 1);
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to create v_mat2 matrix %d\n", info);
-        return 1;
-    }
-    info = GrB_Col_assign(v_mat2, NULL, NULL, bool_vec, GrB_ALL, VERTICES_NUMBER, 0, NULL);
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to assign col to v_mat2 %d\n", info);
-        return 1;
-    }
-
-    GrB_Vector id2;
-    info = GrB_Vector_new(&id2, GrB_BOOL, VERTICES_NUMBER);
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to create id2 vector %d\n", info);
-        return 1;
-    }
-    info = GrB_Vector_assign_BOOL(id2, NULL, NULL, true, GrB_ALL, VERTICES_NUMBER, NULL);
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to assign bools to id2 mat %d\n", info);
-        return 1;
-    }
-    info = GrB_Matrix_new(&id_mat2, GrB_BOOL, 1, VERTICES_NUMBER);
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to create id_mat2 %d\n", info);
-        return 1;
-    }
-    info = GrB_Row_assign(id_mat2, NULL, NULL, id2, 0, GrB_ALL, VERTICES_NUMBER, NULL);
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to assign row to id_mat2 %d\n", info);
-        return 1;
-    }
-
-    GrB_Matrix kron2, kronT;
-    info = GrB_Matrix_new(&kron2, GrB_BOOL, VERTICES_NUMBER, VERTICES_NUMBER);
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to create kron2 %d\n", info);
-        return 1;
-    }
-    info = GrB_Matrix_new(&kronT, GrB_BOOL, VERTICES_NUMBER, VERTICES_NUMBER);
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to create kronT %d\n", info);
-        return 1;
-    }
-    // GxB_print(v_mat2, GxB_COMPLETE);
-    // GxB_print(id_mat2, GxB_COMPLETE);
-
-    info = GrB_kronecker(kron2, NULL, NULL, GrB_LAND, v_mat2, id_mat2, NULL);
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to do kronecker product for kron2 %d\n", info);
-        return 1;
-    }
-
-    GrB_Matrix id_matT;
-    info = GrB_Matrix_new(&id_matT, GrB_BOOL, VERTICES_NUMBER, 1);
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to create id_matT %d\n", info);
-        return 1;
-    }
-    info = GrB_Col_assign(id_matT, NULL, NULL, id2, GrB_ALL, VERTICES_NUMBER, 0, NULL);
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to assign col in id_matT %d\n", info);
-        return 1;
-    }
-
-    GrB_Matrix v_matT;
-    info = GrB_Matrix_new(&v_matT, GrB_BOOL, 1, VERTICES_NUMBER);
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to create v_matT %d\n", info);
-        return 1;
-    }
-    info = GrB_Row_assign(v_matT, NULL, NULL, bool_vec, 0, GrB_ALL, VERTICES_NUMBER, NULL);
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to assign row to v_matT %d\n", info);
-        return 1;
-    }
-
-    info = GrB_kronecker(kronT, NULL, NULL, GrB_LAND, id_matT, v_matT, NULL);
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to do kronecker product for kronT %d\n", info);
-        return 1;
-    }
-
-    // GxB_print(kron2, GxB_COMPLETE);
-    // GxB_print(kronT, GxB_COMPLETE);
+    GxB_print(ID, GxB_COMPLETE);
 
     // ------------------------------------------------------------------------
     // apply cards filter to tx matrix
     // ------------------------------------------------------------------------
+
+    GrB_BinaryOp tx_bool_add_op;
+    info = GrB_BinaryOp_new(&tx_bool_add_op,
+                            (GxB_binary_function)&tx_bool_add,
+                            tx_edge,
+                            tx_edge,
+                            tx_edge);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to create tx bool add binop %d\n", info);
+        return 1;
+    }
+
+    GrB_BinaryOp tx_bool_mul_op;
+    info = GrB_BinaryOp_new(&tx_bool_mul_op,
+                            (GxB_binary_function)&tx_bool_mult,
+                            tx_edge,
+                            GrB_BOOL,
+                            tx_edge);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to create tx bool mul binop %d\n", info);
+        return 1;
+    }
+
+    EdgeTX tx_identity = {0.0, 0};
+    GrB_Monoid tx_bool_monoid;
+    info = GrB_Monoid_new_UDT(&tx_bool_monoid, tx_bool_add_op, &tx_identity);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to create tx bool monoid %d\n", info);
+        return 1;
+    }
+
+    GrB_Semiring tx_bool_semiring;
+    info = GrB_Semiring_new(&tx_bool_semiring, tx_bool_monoid, tx_bool_mul_op);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to create tx bool semiring %d\n", info);
+        return 1;
+    }
+
+    GrB_BinaryOp tx_bool_mul_right_op;
+    info = GrB_BinaryOp_new(&tx_bool_mul_right_op,
+                            (GxB_binary_function)&tx_bool_mult_right,
+                            tx_edge,
+                            tx_edge,
+                            GrB_BOOL);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to create tx right binop %d\n", info);
+        return 1;
+    }
+
+    GrB_Semiring tx_bool_semiring_right;
+    info = GrB_Semiring_new(&tx_bool_semiring_right, tx_bool_monoid, tx_bool_mul_right_op);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to create tx right semiring %d\n", info);
+        return 1;
+    }
     GrB_Matrix tx_mat_filtered;
     GrB_Matrix_new(&tx_mat_filtered, tx_edge, VERTICES_NUMBER, VERTICES_NUMBER);
-    info = GrB_Matrix_assign(tx_mat_filtered, kron2, NULL, tx_edge_mat, GrB_ALL, VERTICES_NUMBER, GrB_ALL, VERTICES_NUMBER, NULL);
+    info = GrB_mxm(tx_mat_filtered, NULL, NULL, tx_bool_semiring, ID, tx_edge_mat, NULL);
     if (info != GrB_SUCCESS)
     {
-        fprintf(stderr, "failed to assign kron2 to tx_edge_mat %d\n", info);
+        fprintf(stderr, "failed to apply1 filter to tx matrix %d\n", info);
         return 1;
     }
-    
-    info = GrB_Matrix_assign(tx_mat_filtered, kronT, NULL, tx_edge_mat, GrB_ALL, VERTICES_NUMBER, GrB_ALL, VERTICES_NUMBER, NULL);
+    GrB_Matrix tx_mat_filtered2;
+    GrB_Matrix_new(&tx_mat_filtered2, tx_edge, VERTICES_NUMBER, VERTICES_NUMBER);
+    info = GrB_mxm(tx_mat_filtered2, NULL, NULL, tx_bool_semiring_right, tx_mat_filtered, ID, NULL);
     if (info != GrB_SUCCESS)
     {
-        fprintf(stderr, "failed to assign kronT to tx_edge_mat %d\n", info);
+        fprintf(stderr, "failed to apply2 filter to tx matrix %d\n", info);
         return 1;
     }
-    GxB_print(tx_mat_filtered, GxB_COMPLETE);
 
+    GxB_print(tx_mat_filtered2, GxB_COMPLETE);
+    printf("Non-zero edges in tx_mat_filtered2:\n");
+    for (GrB_Index i = 0; i < VERTICES_NUMBER; i++)
+        for (GrB_Index j = 0; j < VERTICES_NUMBER; j++)
+        {
+            EdgeTX val;
+            if (GrB_Matrix_extractElement_UDT(&val, tx_mat_filtered2, i, j) == GrB_SUCCESS)
+            {
+                if (val.count > 0)
+                    printf("(%lu,%lu): sum=%.1f count=%u\n", i, j, val.sum, val.count);
+            }
+        }
+    GrB_UnaryOp tx_is_nonempty_op;
+    info = GxB_UnaryOp_new(&tx_is_nonempty_op,
+                           (GxB_unary_function)&tx_is_nonempty,
+                           GrB_BOOL,
+                           tx_edge, NULL, NULL);
+    if (info != GrB_SUCCESS)
+    { /* handle */
+    }
+
+    GrB_Matrix keep;
+    info = GrB_Matrix_new(&keep, GrB_BOOL, VERTICES_NUMBER, VERTICES_NUMBER);
+    if (info != GrB_SUCCESS)
+    { /* handle */
+    }
+
+    info = GrB_apply(keep, NULL, NULL, tx_is_nonempty_op, tx_mat_filtered2, NULL);
+    if (info != GrB_SUCCESS)
+    { /* handle */
+    }
+    GxB_print(keep, GxB_COMPLETE);
+    GrB_Matrix tx_clean;
+    info = GrB_Matrix_new(&tx_clean, tx_edge, VERTICES_NUMBER, VERTICES_NUMBER);
+    if (info != GrB_SUCCESS)
+    { /* handle */
+    }
+
+    info = GrB_assign(tx_clean, keep, NULL,
+                      tx_mat_filtered2,
+                      GrB_ALL, VERTICES_NUMBER,
+                      GrB_ALL, VERTICES_NUMBER,
+                      NULL);
+    if (info != GrB_SUCCESS)
+    { /* handle */
+    }
+
+    GxB_print(tx_clean, GxB_COMPLETE);
+
+    // ------------------------------------------------------------------------
+    // build matrix for pagerank
+    // ------------------------------------------------------------------------
+
+    // apply some F function to every element of result EdgeTX matrix (Fmat)
+    GrB_UnaryOp mean_op;
+    info = GrB_UnaryOp_new(&mean_op, (GxB_unary_function)&F_op, GrB_FP64, tx_edge);
+    GrB_Matrix Fmat;
+    info = GrB_Matrix_new(&Fmat, GrB_FP64, VERTICES_NUMBER, VERTICES_NUMBER);
+    info = GrB_Matrix_apply(Fmat, NULL, NULL, mean_op, tx_clean, NULL);
+    GxB_print(Fmat, GxB_COMPLETE);
+
+    // apply exp function to every element of every element of matrix (lEXPmat)
+    GrB_Matrix EXPmat;
+    GrB_UnaryOp exp_op;
+    info = GrB_UnaryOp_new(&exp_op, (GxB_unary_function)&exp_binop, GrB_FP64, GrB_FP64);
+    info = GrB_Matrix_new(&EXPmat, GrB_FP64, VERTICES_NUMBER, VERTICES_NUMBER);
+    info = GrB_Matrix_apply(EXPmat, NULL, NULL, exp_op, Fmat, NULL);
+    GxB_print(EXPmat, GxB_COMPLETE);
+
+    // reduce EXPmat and receive vector of rows sum (EXPSUMvec)
+    GrB_Vector EXPSUMvec;
+    info = GrB_Vector_new(&EXPSUMvec,GrB_FP64,VERTICES_NUMBER);
+    info = GrB_Matrix_reduce_Monoid(EXPSUMvec,NULL,NULL,GrB_PLUS_MONOID_FP64,EXPmat,NULL);
+    GxB_print(EXPSUMvec, GxB_COMPLETE);
+
+    // do masked kroneker (mask: EXPmat, A: EXPSUMvec, B: ID vector) (KRONEXPSUMmat)
+    GrB_Matrix KRONEXPSUMmat;
+    GrB_Vector id_final;
+    info = GrB_Vector_new(&id_final,GrB_FP64,VERTICES_NUMBER);
+    info = GrB_Vector_assign_BOOL(v, NULL, NULL, 1.0, GrB_ALL, VERTICES_NUMBER, NULL);
     
-    // теперь строим матрицу для pagerank (пункт ниже). softmax. (посмотреть как можно сделать не по дебильному с помощью GB)
-    /// снова редуцируем по строчкам , получаем знаменатель softmax
-    /// 2
+    
 
+    // define add operation (A + B = A / B) (divv)
+
+    // apply divv to (EXPmat and KRONEXPSUMmat) (M)
+    GrB_Matrix M;
+    // ------------------------------------------------------------------------
     // run pagerank
+    // ------------------------------------------------------------------------
+    int iteraions = 0;
+    GrB_Vector pagerank_ans;
+    GrB_Vector_new(&pagerank_ans, GrB_FP64, VERTICES_NUMBER);
+
+    LAGraph_Graph G = NULL;
+
+    info = LAGraph_New(&G, &M, LAGraph_ADJACENCY_DIRECTED, msg);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to create LAGraph_Graph: %d\n", info);
+        return 1;
+    }
+
+    LAGr_PageRank(&pagerank_ans, &iteraions, G, 0.85, 1e-4, 100, msg);
 }
