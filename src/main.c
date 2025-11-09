@@ -49,6 +49,10 @@ typedef struct EdgeTX
 } EdgeTX;
 
 // operations TODO TODO TODO !!!
+void owns_or_bool(EdgeOwns *z, const EdgeOwns *_x, const EdgeOwns *_y)
+{
+    *z = *_x;
+}
 
 void tx_add(EdgeTX *z, EdgeTX *x, EdgeTX *y)
 {
@@ -381,17 +385,17 @@ int main()
     }
     GxB_print(v, GxB_COMPLETE);
     GrB_Matrix v_mat, id_mat;
-    GrB_Matrix_new(&v_mat, GrB_BOOL,VERTICES_NUMBER,1);
-    GrB_Col_assign(v_mat,NULL,NULL,v,GrB_ALL,VERTICES_NUMBER,0,NULL);
+    GrB_Matrix_new(&v_mat, GrB_BOOL, VERTICES_NUMBER, 1);
+    GrB_Col_assign(v_mat, NULL, NULL, v, GrB_ALL, VERTICES_NUMBER, 0, NULL);
 
     GrB_Vector id;
     info = GrB_Vector_new(&id, GrB_BOOL, VERTICES_NUMBER);
     info = GrB_Vector_assign_BOOL(id, NULL, NULL, true, GrB_ALL, VERTICES_NUMBER, NULL);
-    GrB_Matrix_new(&id_mat, GrB_BOOL,1,VERTICES_NUMBER);
-    GrB_Row_assign(id_mat,NULL,NULL,id,0,GrB_ALL,VERTICES_NUMBER,NULL);
+    GrB_Matrix_new(&id_mat, GrB_BOOL, 1, VERTICES_NUMBER);
+    GrB_Row_assign(id_mat, NULL, NULL, id, 0, GrB_ALL, VERTICES_NUMBER, NULL);
 
     GrB_Matrix kron;
-    GrB_Matrix_new(&kron,GrB_BOOL,VERTICES_NUMBER,VERTICES_NUMBER);
+    GrB_Matrix_new(&kron, GrB_BOOL, VERTICES_NUMBER, VERTICES_NUMBER);
     GxB_print(v_mat, GxB_COMPLETE);
     GxB_print(id_mat, GxB_COMPLETE);
     info = GrB_kronecker(kron, NULL, NULL, GrB_LAND, v_mat, id_mat, NULL);
@@ -404,7 +408,7 @@ int main()
 
     // DEBUG
     printf("filter matrix content: \n");
-     for (GrB_Index i = 0; i < VERTICES_NUMBER; i++)
+    for (GrB_Index i = 0; i < VERTICES_NUMBER; i++)
         for (GrB_Index j = 0; j < VERTICES_NUMBER; j++)
         {
             bool val;
@@ -447,7 +451,7 @@ int main()
     // verices filter
     // фильтр только owns фильтруем с одной стороны (исходящие ребра) (поправить рисунок)
     GrB_Matrix owns_mat_filtered;
-    GrB_Matrix_new(&owns_mat_filtered,owns_edge,VERTICES_NUMBER,VERTICES_NUMBER);
+    GrB_Matrix_new(&owns_mat_filtered, owns_edge, VERTICES_NUMBER, VERTICES_NUMBER);
     printf("\nowns edge mat before filter\n");
     for (GrB_Index i = 0; i < VERTICES_NUMBER; i++)
         for (GrB_Index j = 0; j < VERTICES_NUMBER; j++)
@@ -496,9 +500,52 @@ int main()
     // в итоге получаем ребра исходящие из отобранных пользователем
 
     // /*--------------------------- PART 2 --------------------------*/
+    GrB_Vector filtered_cards;
+    info = GrB_Vector_new(&filtered_cards, owns_edge, VERTICES_NUMBER);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to create filtered cards vector %d\n", info);
+        return 1;
+    }
 
-    // теперь нужно взять карты (редукция по строчкам или по столбцам)
-    // редуцируем карты (строим вектор карты, которые относятся к отфильтрованным пользователем )
+    GrB_BinaryOp ownsedge_bool;
+    info = GrB_BinaryOp_new(&ownsedge_bool, (GxB_binary_function)&owns_or_bool, owns_edge, owns_edge, owns_edge);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to create binop ownsedge_bool %d\n", info);
+        return 1;
+    }
+    bool identity = false;
+    GrB_Monoid ownsedge_any_bool;
+    info = GrB_Monoid_new(&ownsedge_any_bool, ownsedge_bool, (void *)&identity);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to create monoid ownsedge_any_bool %d\n", info);
+        return 1;
+    }
+    GxB_print(owns_mat_filtered, GxB_COMPLETE);
+    info = GrB_Matrix_reduce_Monoid(filtered_cards, NULL, NULL, ownsedge_any_bool, owns_mat_filtered, GrB_DESC_T0);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to filter cards %d\n", info);
+        return 1;
+    }
+    GxB_print(filtered_cards, GxB_COMPLETE);
+
+    GrB_Vector bool_vec;
+    info = GrB_Vector_new(&bool_vec, GrB_BOOL, VERTICES_NUMBER);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to create id vector for filtered cards %d\n", info);
+        return 1;
+    }
+    info = GrB_assign(bool_vec, filtered_cards, NULL, true, GrB_ALL, VERTICES_NUMBER, GrB_DESC_S);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to fill id vector for filtered cards %d\n", info);
+        return 1;
+    }
+    GxB_print(bool_vec, GxB_COMPLETE);
 
     // строим ID матрицу
 
