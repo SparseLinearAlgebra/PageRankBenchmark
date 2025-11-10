@@ -47,12 +47,6 @@ typedef struct
 } Card;
 
 // edges
-
-typedef struct
-{
-    int days;
-} EdgeOwns;
-
 typedef struct
 {
     double sum;
@@ -68,17 +62,8 @@ void check_user_age(bool *z, const User *x, GrB_Index _i, GrB_Index _j, const ui
 void check_payment_system(bool *z, const Card *x, GrB_Index _i, GrB_Index _j, const uint8_t *y)
 {
     {
-        *z = ((x->system) == MIR);
+        *z = ((x->system) == *y);
     }
-}
-void owns_bool_mult(bool *z, const bool *x, const EdgeOwns *y)
-{
-    *z = *x;
-}
-
-void owns_bool_add(bool *z, const bool *x, const bool *y)
-{
-    *z = (*x || *y);
 }
 
 void tx_bool_mult(EdgeTX *z, const bool *x, const EdgeTX *y)
@@ -86,7 +71,10 @@ void tx_bool_mult(EdgeTX *z, const bool *x, const EdgeTX *y)
     if (*x) // вот этот иф не нужен в идеале, потому что мы проходимся только по значащим значениям
         *z = *y;
     else
-        z->sum = 0, z->count = 0;
+    {
+        z->sum = 0;
+        z->count = 0;
+    }
 }
 
 void tx_bool_mult_right(EdgeTX *z, const EdgeTX *x, const bool *y)
@@ -94,7 +82,10 @@ void tx_bool_mult_right(EdgeTX *z, const EdgeTX *x, const bool *y)
     if (*y)
         *z = *x;
     else
-        z->sum = 0, z->count = 0;
+    {
+        z->sum = 0;
+        z->count = 0;
+    }
 }
 
 void tx_bool_add(EdgeTX *z, const EdgeTX *x, const EdgeTX *y)
@@ -102,7 +93,10 @@ void tx_bool_add(EdgeTX *z, const EdgeTX *x, const EdgeTX *y)
     if (x->count > 0 || y->count > 0)
         *z = (x->count > 0) ? *x : *y;
     else
-        z->sum = 0, z->count = 0;
+    {
+        z->sum = 0;
+        z->count = 0;
+    }
 }
 
 void tx_is_nonempty(bool *z, const EdgeTX *x)
@@ -158,20 +152,20 @@ GrB_Info init_edges(GrB_Matrix *tx_mat, GrB_Matrix *owns_mat)
     TRY(GrB_Matrix_setElement_UDT(*tx_mat, &edge129, 11, 8));
 
     // fill owns_mat
-    EdgeOwns edge45 = {45};
-    EdgeOwns edge36 = {36};
-    EdgeOwns edge19 = {19};
-    EdgeOwns edge27 = {27};
-    EdgeOwns edge28 = {28};
-    EdgeOwns edge1011 = {21};
-    EdgeOwns edge1012 = {22};
-    TRY(GrB_Matrix_setElement_UDT(*owns_mat, &edge45, 3, 4));
-    TRY(GrB_Matrix_setElement_UDT(*owns_mat, &edge36, 2, 5));
-    TRY(GrB_Matrix_setElement_UDT(*owns_mat, &edge19, 0, 8));
-    TRY(GrB_Matrix_setElement_UDT(*owns_mat, &edge27, 1, 6));
-    TRY(GrB_Matrix_setElement_UDT(*owns_mat, &edge28, 1, 7));
-    TRY(GrB_Matrix_setElement_UDT(*owns_mat, &edge1011, 9, 10));
-    TRY(GrB_Matrix_setElement_UDT(*owns_mat, &edge1012, 9, 11));
+    bool edge45 = true;
+    bool edge36 = true;
+    bool edge19 = true;
+    bool edge27 = true;
+    bool edge28 = true;
+    bool edge1011 = true;
+    bool edge1012 = true;
+    TRY(GrB_Matrix_setElement_BOOL(*owns_mat, &edge45, 3, 4));
+    TRY(GrB_Matrix_setElement_BOOL(*owns_mat, &edge36, 2, 5));
+    TRY(GrB_Matrix_setElement_BOOL(*owns_mat, &edge19, 0, 8));
+    TRY(GrB_Matrix_setElement_BOOL(*owns_mat, &edge27, 1, 6));
+    TRY(GrB_Matrix_setElement_BOOL(*owns_mat, &edge28, 1, 7));
+    TRY(GrB_Matrix_setElement_BOOL(*owns_mat, &edge1011, 9, 10));
+    TRY(GrB_Matrix_setElement_BOOL(*owns_mat, &edge1012, 9, 11));
 
     return info;
 }
@@ -227,17 +221,17 @@ int main()
     // init edge matrices
     // ------------------------------------------------------------------------
 
-    // custom types for edges
-    GrB_Type tx_edge, owns_edge;
+    // custom type for transaction edges
+    GrB_Type tx_edge;
     TRY(GrB_Type_new(&tx_edge, sizeof(EdgeTX)));
-    TRY(GrB_Type_new(&owns_edge, sizeof(EdgeOwns)));
 
     // edge decomposition
 
     GrB_Matrix tx_edge_mat, owns_edge_mat;
     TRY(GrB_Matrix_new(&tx_edge_mat, tx_edge, VERTICES_NUMBER, VERTICES_NUMBER));
-    TRY(GrB_Matrix_new(&owns_edge_mat, owns_edge, VERTICES_NUMBER, VERTICES_NUMBER));
+    TRY(GrB_Matrix_new(&owns_edge_mat, GrB_BOOL, VERTICES_NUMBER, VERTICES_NUMBER));
     init_edges(&tx_edge_mat, &owns_edge_mat);
+
     // ------------------------------------------------------------------------
     // init vertices vectors
     // ------------------------------------------------------------------------
@@ -253,6 +247,7 @@ int main()
     GrB_Vector cards;
     TRY(GrB_Vector_new(&cards, card, VERTICES_NUMBER));
     TRY(init_vertices(&users, &cards));
+
     // ------------------------------------------------------------------------
     // build user filters
     // ------------------------------------------------------------------------
@@ -274,22 +269,11 @@ int main()
     // ------------------------------------------------------------------------
     // apply user filters
     // ------------------------------------------------------------------------
-    GrB_BinaryOp bool_add_op;
-    TRY(GrB_BinaryOp_new(&bool_add_op, (GxB_binary_function)&owns_bool_add, GrB_BOOL, GrB_BOOL, GrB_BOOL));
-    GrB_BinaryOp owns_bool_mul_op;
-    TRY(GrB_BinaryOp_new(&owns_bool_mul_op, (GxB_binary_function)&owns_bool_mult, GrB_BOOL, GrB_BOOL, owns_edge));
-
-    GrB_Monoid owns_bool_monoid;
-    bool owns_bool_identity = false;
-    TRY(GrB_Monoid_new_BOOL(&owns_bool_monoid, bool_add_op, (void *)&owns_bool_identity));
-
-    GrB_Semiring owns_semiring_bool;
-    TRY(GrB_Semiring_new(&owns_semiring_bool, owns_bool_monoid, owns_bool_mul_op));
 
     GrB_Matrix owns_mat_filtered;
     TRY(GrB_Matrix_new(&owns_mat_filtered, GrB_BOOL, VERTICES_NUMBER, VERTICES_NUMBER));
     // apply filter
-    TRY(GrB_mxm(owns_mat_filtered, NULL, NULL, owns_semiring_bool, ID, owns_edge_mat, NULL));
+    TRY(GrB_mxm(owns_mat_filtered, NULL, NULL, GrB_LOR_LAND_SEMIRING_BOOL, ID, owns_edge_mat, NULL));
 
     // ------------------------------------------------------------------------
     // get cards of filtered users
