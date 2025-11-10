@@ -265,60 +265,7 @@ int main()
     TRY(GrB_Vector_apply_IndexOp_UDT(v, NULL, NULL, user_age, users, &age, NULL));
     GxB_print(v, GxB_COMPLETE);
     TRY(GrB_Matrix_diag(&ID, v, 0));
-    // GrB_Matrix v_mat, id_mat;
-    // GrB_Matrix_new(&v_mat, GrB_BOOL, VERTICES_NUMBER, 1);
-    // GrB_Col_assign(v_mat, NULL, NULL, v, GrB_ALL, VERTICES_NUMBER, 0, NULL);
-
-    // GrB_Vector id;
-    // TRY(GrB_Vector_new(&id, GrB_BOOL, VERTICES_NUMBER);
-    // TRY(GrB_Vector_assign_BOOL(id, NULL, NULL, true, GrB_ALL, VERTICES_NUMBER, NULL);
-    // GrB_Matrix_new(&id_mat, GrB_BOOL, 1, VERTICES_NUMBER);
-    // GrB_Row_assign(id_mat, NULL, NULL, id, 0, GrB_ALL, VERTICES_NUMBER, NULL);
-
-    // GrB_Matrix kron;
-    // GrB_Matrix_new(&kron, GrB_BOOL, VERTICES_NUMBER, VERTICES_NUMBER);
-    // // GxB_print(v_mat, GxB_COMPLETE);
-    // // GxB_print(id_mat, GxB_COMPLETE);
-    // TRY(GrB_kronecker(kron, NULL, NULL, GrB_LAND, v_mat, id_mat, NULL);
-
-    // DEBUG
-    printf("filter matrix content: \n");
-    for (GrB_Index i = 0; i < VERTICES_NUMBER; i++)
-        for (GrB_Index j = 0; j < VERTICES_NUMBER; j++)
-        {
-            bool val;
-            GrB_Matrix_extractElement_BOOL(&val, ID, i, j);
-            if (info == GrB_SUCCESS)
-            {
-                printf("[%lu,%lu] = %d\n", i, j, val);
-            }
-            // else if (info == GrB_NO_VALUE)
-            // {
-            //     printf("[%lu,%lu] no value\n", i, j);
-            // }
-            // else
-            // {
-            //     printf("[%lu,%lu] error code: %d\n", i, j, info);
-            // }
-        }
-    // for (GrB_Index i = 0; i < VERTICES_NUMBER; i++)
-    // {
-    //     bool val;
-    //     GrB_Info TRY(GrB_Matrix_extractElement_BOOL(&val, kron, i, i);
-    //     if (info == GrB_SUCCESS)
-    //     {
-    //         printf("[%lu,%lu] = %d\n", i, i, val);
-    //     }
-    //     else if (info == GrB_NO_VALUE)
-    //     {
-    //         printf("[%lu,%lu] no value\n", i, i);
-    //     }
-    //     else
-    //     {
-    //         printf("[%lu,%lu] error code: %d\n", i, i, info);
-    //     }
-    // }
-
+    
     // ------------------------------------------------------------------------
     // apply user filters
     // ------------------------------------------------------------------------
@@ -336,47 +283,8 @@ int main()
 
     GrB_Matrix owns_mat_filtered;
     TRY(GrB_Matrix_new(&owns_mat_filtered, GrB_BOOL, VERTICES_NUMBER, VERTICES_NUMBER));
-    printf("\nowns edge mat before filter\n");
-    for (GrB_Index i = 0; i < VERTICES_NUMBER; i++)
-        for (GrB_Index j = 0; j < VERTICES_NUMBER; j++)
-        {
-            EdgeOwns val;
-            GrB_Matrix_extractElement_UDT(&val, owns_edge_mat, i, j);
-            if (info == GrB_SUCCESS)
-            {
-                printf("[%lu,%lu] = %d\n", i, j, val.days);
-            }
-            // else if (info == GrB_NO_VALUE)
-            // {
-            //     printf("[%lu,%lu] no value\n", i, j);
-            // }
-            // else
-            // {
-            //     printf("[%lu,%lu] error code: %d\n", i, j, info);
-            // }
-        }
     // apply filter
-    // TRY(GrB_Matrix_assign(owns_mat_filtered, kron, NULL, owns_edge_mat, GrB_ALL, VERTICES_NUMBER, GrB_ALL, VERTICES_NUMBER, NULL);
     TRY(GrB_mxm(owns_mat_filtered, NULL, NULL, owns_semiring_bool, ID, owns_edge_mat, NULL));
-    printf("\nowns edge mat after filter\n");
-    for (GrB_Index i = 0; i < VERTICES_NUMBER; i++)
-        for (GrB_Index j = 0; j < VERTICES_NUMBER; j++)
-        {
-            EdgeOwns val;
-            GrB_Matrix_extractElement_UDT(&val, owns_mat_filtered, i, j);
-            if (info == GrB_SUCCESS)
-            {
-                printf("[%lu,%lu] = %d\n", i, j, val.days);
-            }
-            // else if (info == GrB_NO_VALUE)
-            // {
-            //     printf("[%lu,%lu] no value\n", i, j);
-            // }
-            // else
-            // {
-            //     printf("[%lu,%lu] error code: %d\n", i, j, info);
-            // }
-        }
 
     // ------------------------------------------------------------------------
     // get cards of filtered users
@@ -424,17 +332,7 @@ int main()
     TRY(GrB_mxm(tx_mat_filtered2, NULL, NULL, tx_bool_semiring_right, tx_mat_filtered, ID, NULL));
 
     GxB_print(tx_mat_filtered2, GxB_COMPLETE);
-    printf("Non-zero edges in tx_mat_filtered2:\n");
-    for (GrB_Index i = 0; i < VERTICES_NUMBER; i++)
-        for (GrB_Index j = 0; j < VERTICES_NUMBER; j++)
-        {
-            EdgeTX val;
-            if (GrB_Matrix_extractElement_UDT(&val, tx_mat_filtered2, i, j) == GrB_SUCCESS)
-            {
-                if (val.count > 0)
-                    printf("(%lu,%lu): sum=%.1f count=%u\n", i, j, val.sum, val.count);
-            }
-        }
+
     GrB_UnaryOp tx_is_nonempty_op;
     TRY(GxB_UnaryOp_new(&tx_is_nonempty_op, (GxB_unary_function)&tx_is_nonempty, GrB_BOOL, tx_edge, NULL, NULL));
 
@@ -493,15 +391,15 @@ int main()
     TRY(GrB_mxm(KRONEXPSUMmat, NULL, NULL, GxB_PLUS_TIMES_FP64, v_mat, id_mat, NULL));
     GxB_print(KRONEXPSUMmat, GxB_COMPLETE);
 
-    // define add operation (A + B = A / B) (divv)
-
-    // apply divv to (EXPmat and KRONEXPSUMmat) (M)
+    // apply div to (EXPmat and KRONEXPSUMmat) (M)
     GrB_Matrix M;
     TRY(GrB_Matrix_new(&M, GrB_FP64, VERTICES_NUMBER, VERTICES_NUMBER));
+    // define add operation (A + B = A / B) (div)
     GrB_BinaryOp divide_op;
     TRY(GrB_BinaryOp_new(&divide_op, (GxB_binary_function)&divide, GrB_FP64, GrB_FP64, GrB_FP64));
     TRY(GrB_Matrix_eWiseAdd_BinaryOp(M, EXPmat, NULL, divide_op, EXPmat, KRONEXPSUMmat, NULL));
     GxB_print(M, GxB_COMPLETE);
+
     // ------------------------------------------------------------------------
     // run pagerank
     // ------------------------------------------------------------------------
