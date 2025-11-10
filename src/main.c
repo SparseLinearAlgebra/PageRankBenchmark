@@ -102,6 +102,257 @@ void F_op(double *z, const EdgeTX *x)
 {
     *z = log(x->sum);
 }
+void divide(double *z, const double *x, const double *y)
+{
+    *z = (*y != 0.0) ? (*x / *y) : 0.0;
+}
+
+GrB_Info init_edges(GrB_Matrix *tx_mat, GrB_Matrix *owns_mat)
+{
+    GrB_Info info;
+    EdgeTX edge56 = {2223412.0, 56};
+    EdgeTX edge59 = {6223412.0, 59};
+    EdgeTX edge67 = {8913212.0, 67};
+    EdgeTX edge69 = {92223412.0, 69};
+    EdgeTX edge65 = {133214.1, 65};
+    EdgeTX edge95 = {1267325.99, 95};
+    EdgeTX edge611 = {1999999.1, 611};
+    EdgeTX edge116 = {6999999.1, 116};
+    EdgeTX edge511 = {9999999.1, 511};
+    EdgeTX edge115 = {8999999.1, 115};
+    EdgeTX edge127 = {8999999.1, 127};
+    EdgeTX edge712 = {8999999.1, 712};
+    EdgeTX edge912 = {899999999.1, 912};
+    EdgeTX edge129 = {99999999.1, 129};
+
+    info = GrB_Matrix_setElement_UDT(*tx_mat, &edge56, 4, 5);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to insert \"edge56\" in matrix\n");
+        return 1;
+    }
+    info = GrB_Matrix_setElement_UDT(*tx_mat, &edge59, 4, 8);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to insert \"edge59\" in matrix\n");
+        return 1;
+    }
+    info = GrB_Matrix_setElement_UDT(*tx_mat, &edge67, 5, 6);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to insert \"edge67\" in matrix\n");
+        return 1;
+    }
+    info = GrB_Matrix_setElement_UDT(*tx_mat, &edge69, 5, 8);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to insert \"edge69\" in matrix\n");
+        return 1;
+    }
+    info = GrB_Matrix_setElement_UDT(*tx_mat, &edge65, 5, 4);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to insert \"edge69\" in matrix\n");
+        return 1;
+    }
+    info = GrB_Matrix_setElement_UDT(*tx_mat, &edge95, 8, 4);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to insert \"edge69\" in matrix\n");
+        return 1;
+    }
+    info = GrB_Matrix_setElement_UDT(*tx_mat, &edge611, 5, 10);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to insert \"edge69\" in matrix\n");
+        return 1;
+    }
+    info = GrB_Matrix_setElement_UDT(*tx_mat, &edge116, 10, 5);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to insert \"edge69\" in matrix\n");
+        return 1;
+    }
+    info = GrB_Matrix_setElement_UDT(*tx_mat, &edge511, 4, 10);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to insert \"edge69\" in matrix\n");
+        return 1;
+    }
+    info = GrB_Matrix_setElement_UDT(*tx_mat, &edge115, 10, 4);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to insert \"edge69\" in matrix\n");
+        return 1;
+    }
+    info = GrB_Matrix_setElement_UDT(*tx_mat, &edge127, 11, 6);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to insert \"edge69\" in matrix\n");
+        return 1;
+    }
+    info = GrB_Matrix_setElement_UDT(*tx_mat, &edge712, 6, 11);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to insert \"edge69\" in matrix\n");
+        return 1;
+    }
+    info = GrB_Matrix_setElement_UDT(*tx_mat, &edge912, 8, 11);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to insert \"edge69\" in matrix\n");
+        return 1;
+    }
+    info = GrB_Matrix_setElement_UDT(*tx_mat, &edge129, 11, 8);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to insert \"edge69\" in matrix\n");
+        return 1;
+    }
+    // fill owns_mat
+    EdgeOwns edge45 = {45};
+    EdgeOwns edge36 = {36};
+    EdgeOwns edge19 = {19};
+    EdgeOwns edge27 = {27};
+    EdgeOwns edge28 = {28};
+    EdgeOwns edge1011 = {21};
+    EdgeOwns edge1012 = {22};
+    info = GrB_Matrix_setElement_UDT(*owns_mat, &edge45, 3, 4);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to insert \"edge45\" in matrix\n");
+        return 1;
+    }
+    info = GrB_Matrix_setElement_UDT(*owns_mat, &edge36, 2, 5);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to insert \"edge36\" in matrix\n");
+        return 1;
+    }
+    info = GrB_Matrix_setElement_UDT(*owns_mat, &edge19, 0, 8);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to insert \"edge19\" in matrix\n");
+        return 1;
+    }
+    info = GrB_Matrix_setElement_UDT(*owns_mat, &edge27, 1, 6);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to insert \"edge27\" in matrix\n");
+        return 1;
+    }
+    info = GrB_Matrix_setElement_UDT(*owns_mat, &edge28, 1, 7);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to insert \"edge28\" in matrix\n");
+        return 1;
+    }
+    info = GrB_Matrix_setElement_UDT(*owns_mat, &edge1011, 9, 10);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to insert \"edge1011\" in matrix\n");
+        return 1;
+    }
+    info = GrB_Matrix_setElement_UDT(*owns_mat, &edge1012, 9, 11);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to insert \"edge1011\" in matrix\n");
+        return 1;
+    }
+    return info;
+}
+
+GrB_Info init_vertices(GrB_Vector *users, GrB_Vector *cards)
+{
+    GrB_Info info;
+    // 1 - 4 & 10 --- users
+    User user1 = {MALE, 52};
+    User user2 = {MALE, 25};
+    User user3 = {FEMALE, 40};
+    User user4 = {MALE, 42};
+    User user10 = {MALE, 35};
+    info = GrB_Vector_setElement_UDT(*users, &user1, 0);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to insert \"user1\" in vector\n");
+        return 1;
+    }
+    info = GrB_Vector_setElement_UDT(*users, &user2, 1);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to insert \"edge2\" in vector\n");
+        return 1;
+    }
+    info = GrB_Vector_setElement_UDT(*users, &user3, 2);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to insert \"user3\" in vector\n");
+        return 1;
+    }
+    info = GrB_Vector_setElement_UDT(*users, &user4, 3);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to insert \"user4\" in vector\n");
+        return 1;
+    }
+    info = GrB_Vector_setElement_UDT(*users, &user10, 9);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to insert \"user4\" in vector\n");
+        return 1;
+    }
+    // 5 - 9 & 11 - 12 --- cards
+    Card card5 = {MIR, 600000.0};
+    Card card6 = {MIR, 700000.0};
+    Card card7 = {VISA, 800000.0};
+    Card card8 = {MASTERCARD, 900000.0};
+    Card card9 = {MASTERCARD, 10000000.0};
+    Card card11 = {MASTERCARD, 99000000.0};
+    Card card12 = {MASTERCARD, 99000000.0};
+    info = GrB_Vector_setElement_UDT(*cards, &card5, 4);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to insert \"card5\" in vector\n");
+        return 1;
+    }
+    info = GrB_Vector_setElement_UDT(*cards, &card6, 5);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to insert \"card6\" in vector\n");
+        return 1;
+    }
+    info = GrB_Vector_setElement_UDT(*cards, &card7, 6);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to insert \"card7\" in vector\n");
+        return 1;
+    }
+    info = GrB_Vector_setElement_UDT(*cards, &card8, 7);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to insert \"card8\" in vector\n");
+        return 1;
+    }
+    info = GrB_Vector_setElement_UDT(*cards, &card9, 8);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to insert \"card9\" in vector\n");
+        return 1;
+    }
+    info = GrB_Vector_setElement_UDT(*cards, &card11, 10);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to insert \"card9\" in vector\n");
+        return 1;
+    }
+    info = GrB_Vector_setElement_UDT(*cards, &card12, 11);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to insert \"card9\" in vector\n");
+        return 1;
+    }
+    return info;
+}
 
 int main()
 {
@@ -150,155 +401,10 @@ int main()
         fprintf(stderr, "failed to create \"owns\" matrix\n");
         return 1;
     }
-
-    // fill tx_mat
-    EdgeTX edge56 = {2223412.0, 56};
-    EdgeTX edge59 = {6223412.0, 59};
-    EdgeTX edge67 = {8913212.0, 67};
-    EdgeTX edge69 = {92223412.0, 69};
-    EdgeTX edge65 = {133214.1, 65};
-    EdgeTX edge95 = {1267325.99, 95};
-    EdgeTX edge611 = {1999999.1, 611};
-    EdgeTX edge116 = {6999999.1, 116};
-    EdgeTX edge511 = {9999999.1, 511};
-    EdgeTX edge115 = {8999999.1, 115};
-    EdgeTX edge127 = {8999999.1, 127};
-    EdgeTX edge712 = {8999999.1, 712};
-    EdgeTX edge912 = {899999999.1, 912};
-    EdgeTX edge129 = {99999999.1, 129};
-
-    info = GrB_Matrix_setElement_UDT(tx_edge_mat, &edge56, 4, 5);
+    info = init_edges(&tx_edge_mat, &owns_edge_mat);
     if (info != GrB_SUCCESS)
     {
-        fprintf(stderr, "failed to insert \"edge56\" in matrix\n");
-        return 1;
-    }
-    info = GrB_Matrix_setElement_UDT(tx_edge_mat, &edge59, 4, 8);
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to insert \"edge59\" in matrix\n");
-        return 1;
-    }
-    info = GrB_Matrix_setElement_UDT(tx_edge_mat, &edge67, 5, 6);
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to insert \"edge67\" in matrix\n");
-        return 1;
-    }
-    info = GrB_Matrix_setElement_UDT(tx_edge_mat, &edge69, 5, 8);
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to insert \"edge69\" in matrix\n");
-        return 1;
-    }
-    info = GrB_Matrix_setElement_UDT(tx_edge_mat, &edge65, 5, 4);
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to insert \"edge69\" in matrix\n");
-        return 1;
-    }
-    info = GrB_Matrix_setElement_UDT(tx_edge_mat, &edge95, 8, 4);
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to insert \"edge69\" in matrix\n");
-        return 1;
-    }
-    info = GrB_Matrix_setElement_UDT(tx_edge_mat, &edge611, 5, 10);
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to insert \"edge69\" in matrix\n");
-        return 1;
-    }
-    info = GrB_Matrix_setElement_UDT(tx_edge_mat, &edge116, 10, 5);
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to insert \"edge69\" in matrix\n");
-        return 1;
-    }
-    info = GrB_Matrix_setElement_UDT(tx_edge_mat, &edge511, 4, 10);
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to insert \"edge69\" in matrix\n");
-        return 1;
-    }
-    info = GrB_Matrix_setElement_UDT(tx_edge_mat, &edge115, 10, 4);
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to insert \"edge69\" in matrix\n");
-        return 1;
-    }
-    info = GrB_Matrix_setElement_UDT(tx_edge_mat, &edge127, 11, 6);
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to insert \"edge69\" in matrix\n");
-        return 1;
-    }
-    info = GrB_Matrix_setElement_UDT(tx_edge_mat, &edge712, 6, 11);
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to insert \"edge69\" in matrix\n");
-        return 1;
-    }
-    info = GrB_Matrix_setElement_UDT(tx_edge_mat, &edge912, 8, 11);
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to insert \"edge69\" in matrix\n");
-        return 1;
-    }
-    info = GrB_Matrix_setElement_UDT(tx_edge_mat, &edge129, 11, 8);
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to insert \"edge69\" in matrix\n");
-        return 1;
-    }
-    // fill owns_mat
-    EdgeOwns edge45 = {45};
-    EdgeOwns edge36 = {36};
-    EdgeOwns edge19 = {19};
-    EdgeOwns edge27 = {27};
-    EdgeOwns edge28 = {28};
-    EdgeOwns edge1011 = {21};
-    EdgeOwns edge1012 = {22};
-    info = GrB_Matrix_setElement_UDT(owns_edge_mat, &edge45, 3, 4);
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to insert \"edge45\" in matrix\n");
-        return 1;
-    }
-    info = GrB_Matrix_setElement_UDT(owns_edge_mat, &edge36, 2, 5);
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to insert \"edge36\" in matrix\n");
-        return 1;
-    }
-    info = GrB_Matrix_setElement_UDT(owns_edge_mat, &edge19, 0, 8);
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to insert \"edge19\" in matrix\n");
-        return 1;
-    }
-    info = GrB_Matrix_setElement_UDT(owns_edge_mat, &edge27, 1, 6);
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to insert \"edge27\" in matrix\n");
-        return 1;
-    }
-    info = GrB_Matrix_setElement_UDT(owns_edge_mat, &edge28, 1, 7);
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to insert \"edge28\" in matrix\n");
-        return 1;
-    }
-    info = GrB_Matrix_setElement_UDT(owns_edge_mat, &edge1011, 9, 10);
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to insert \"edge1011\" in matrix\n");
-        return 1;
-    }
-    info = GrB_Matrix_setElement_UDT(owns_edge_mat, &edge1012, 9, 11);
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to insert \"edge1011\" in matrix\n");
+        fprintf(stderr, "failed TODODODOO to create \"owns\" matrix\n");
         return 1;
     }
 
@@ -321,7 +427,6 @@ int main()
         return 1;
     }
 
-    // 1 - 4 & 10 --- users
     GrB_Vector users;
     info = GrB_Vector_new(&users, user, VERTICES_NUMBER);
     if (info != GrB_SUCCESS)
@@ -329,43 +434,7 @@ int main()
         fprintf(stderr, "failed to create \"users\" vector\n");
         return 1;
     }
-    User user1 = {MALE, 52};
-    User user2 = {MALE, 25};
-    User user3 = {FEMALE, 40};
-    User user4 = {MALE, 42};
-    User user10 = {MALE, 35};
-    info = GrB_Vector_setElement_UDT(users, &user1, 0);
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to insert \"user1\" in vector\n");
-        return 1;
-    }
-    info = GrB_Vector_setElement_UDT(users, &user2, 1);
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to insert \"edge2\" in vector\n");
-        return 1;
-    }
-    info = GrB_Vector_setElement_UDT(users, &user3, 2);
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to insert \"user3\" in vector\n");
-        return 1;
-    }
-    info = GrB_Vector_setElement_UDT(users, &user4, 3);
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to insert \"user4\" in vector\n");
-        return 1;
-    }
-    info = GrB_Vector_setElement_UDT(users, &user10, 9);
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to insert \"user4\" in vector\n");
-        return 1;
-    }
 
-    // 5 - 9 & 11 - 12 --- cards
     GrB_Vector cards;
     info = GrB_Vector_new(&cards, card, VERTICES_NUMBER);
     if (info != GrB_SUCCESS)
@@ -373,61 +442,12 @@ int main()
         fprintf(stderr, "failed to create \"cards\" vector\n");
         return 1;
     }
-    Card card5 = {MIR, 600000.0};
-    Card card6 = {MIR, 700000.0};
-    Card card7 = {VISA, 800000.0};
-    Card card8 = {MASTERCARD, 900000.0};
-    Card card9 = {MASTERCARD, 10000000.0};
-    Card card11 = {MASTERCARD, 99000000.0};
-    Card card12 = {MASTERCARD, 99000000.0};
-    info = GrB_Vector_setElement_UDT(cards, &card5, 4);
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to insert \"card5\" in vector\n");
-        return 1;
-    }
-    info = GrB_Vector_setElement_UDT(cards, &card6, 5);
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to insert \"card6\" in vector\n");
-        return 1;
-    }
-    info = GrB_Vector_setElement_UDT(cards, &card7, 6);
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to insert \"card7\" in vector\n");
-        return 1;
-    }
-    info = GrB_Vector_setElement_UDT(cards, &card8, 7);
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to insert \"card8\" in vector\n");
-        return 1;
-    }
-    info = GrB_Vector_setElement_UDT(cards, &card9, 8);
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to insert \"card9\" in vector\n");
-        return 1;
-    }
-    info = GrB_Vector_setElement_UDT(cards, &card11, 10);
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to insert \"card9\" in vector\n");
-        return 1;
-    }
-    info = GrB_Vector_setElement_UDT(cards, &card12, 11);
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "failed to insert \"card9\" in vector\n");
-        return 1;
-    }
-
+    info = init_vertices(&users, &cards);
     // ------------------------------------------------------------------------
     // build user filters
     // ------------------------------------------------------------------------
 
-    // vertex filter: we will take only prersons over 30 and exclude cards with `mastercard` payment system
+    // vertex filter: we will take only prersons over 30
     GrB_Matrix ID;
     GrB_Vector v;
     info = GrB_Vector_new(&v, GrB_BOOL, VERTICES_NUMBER);
@@ -785,22 +805,77 @@ int main()
 
     // reduce EXPmat and receive vector of rows sum (EXPSUMvec)
     GrB_Vector EXPSUMvec;
-    info = GrB_Vector_new(&EXPSUMvec,GrB_FP64,VERTICES_NUMBER);
-    info = GrB_Matrix_reduce_Monoid(EXPSUMvec,NULL,NULL,GrB_PLUS_MONOID_FP64,EXPmat,NULL);
+    info = GrB_Vector_new(&EXPSUMvec, GrB_FP64, VERTICES_NUMBER);
+    info = GrB_Matrix_reduce_Monoid(EXPSUMvec, NULL, NULL, GrB_PLUS_MONOID_FP64, EXPmat, NULL);
     GxB_print(EXPSUMvec, GxB_COMPLETE);
 
     // do masked kroneker (mask: EXPmat, A: EXPSUMvec, B: ID vector) (KRONEXPSUMmat)
-    GrB_Matrix KRONEXPSUMmat;
+
     GrB_Vector id_final;
-    info = GrB_Vector_new(&id_final,GrB_FP64,VERTICES_NUMBER);
-    info = GrB_Vector_assign_BOOL(v, NULL, NULL, 1.0, GrB_ALL, VERTICES_NUMBER, NULL);
-    
-    
+    info = GrB_Vector_new(&id_final, GrB_FP64, VERTICES_NUMBER);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to create id_final %d\n", info);
+        return 1;
+    }
+    info = GrB_Vector_assign_BOOL(id_final, NULL, NULL, 1.0, GrB_ALL, VERTICES_NUMBER, NULL);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to assign 1.0 into id-final %d\n", info);
+        return 1;
+    }
+    GrB_Matrix v_mat, id_mat;
+    info = GrB_Matrix_new(&v_mat, GrB_FP64, VERTICES_NUMBER, 1);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to create v_mat matrix %d\n", info);
+        return 1;
+    }
+    info = GrB_Col_assign(v_mat, NULL, NULL, EXPSUMvec, GrB_ALL, VERTICES_NUMBER, 0, NULL);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to assign col into v_mat %d\n", info);
+        return 1;
+    }
+
+    info = GrB_Matrix_new(&id_mat, GrB_FP64, 1, VERTICES_NUMBER);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to create id_mat matrix %d\n", info);
+        return 1;
+    }
+    info = GrB_Row_assign(id_mat, NULL, NULL, id_final, 0, GrB_ALL, VERTICES_NUMBER, NULL);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to assign row into id_mat %d\n", info);
+        return 1;
+    }
+
+    GrB_Matrix KRONEXPSUMmat;
+    info = GrB_Matrix_new(&KRONEXPSUMmat, GrB_FP64, VERTICES_NUMBER, VERTICES_NUMBER);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to create kron matrix %d\n", info);
+        return 1;
+    }
+
+    info = GrB_mxm(KRONEXPSUMmat, NULL, NULL, GxB_PLUS_TIMES_FP64, v_mat, id_mat, NULL);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to do kron matrix %d\n", info);
+        return 1;
+    }
+    GxB_print(KRONEXPSUMmat, GxB_COMPLETE);
 
     // define add operation (A + B = A / B) (divv)
 
     // apply divv to (EXPmat and KRONEXPSUMmat) (M)
     GrB_Matrix M;
+    GrB_Matrix_new(&M, GrB_FP64, VERTICES_NUMBER, VERTICES_NUMBER);
+    GrB_BinaryOp divide_op;
+    GrB_BinaryOp_new(&divide_op, (GxB_binary_function)&divide, GrB_FP64, GrB_FP64, GrB_FP64);
+    GrB_Matrix_eWiseAdd_BinaryOp(M, EXPmat, NULL, divide_op, EXPmat, KRONEXPSUMmat, NULL);
+    GxB_print(M, GxB_COMPLETE);
     // ------------------------------------------------------------------------
     // run pagerank
     // ------------------------------------------------------------------------
@@ -816,6 +891,25 @@ int main()
         fprintf(stderr, "failed to create LAGraph_Graph: %d\n", info);
         return 1;
     }
+    info = LAGraph_Cached_AT(G, msg);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to cache AT: %d %s\n", info, msg);
+        return 1;
+    }
 
-    LAGr_PageRank(&pagerank_ans, &iteraions, G, 0.85, 1e-4, 100, msg);
+    info = LAGraph_Cached_OutDegree(G, msg);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to cache out degree: %d %s\n", info, msg);
+        return 1;
+    }
+
+    info = LAGr_PageRank(&pagerank_ans, &iteraions, G, 0.85, 1e-4, 100, msg);
+    if (info != GrB_SUCCESS)
+    {
+        fprintf(stderr, "failed to do pagerank: %d %s\n", info, msg);
+        return 1;
+    }
+    GxB_print(pagerank_ans, GxB_COMPLETE);
 }
