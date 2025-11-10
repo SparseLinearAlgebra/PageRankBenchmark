@@ -65,7 +65,12 @@ void check_user_age(bool *z, const User *x, GrB_Index _i, GrB_Index _j, const ui
         *z = (x->age > *y);
     }
 }
-
+void check_payment_system(bool *z, const Card *x, GrB_Index _i, GrB_Index _j, const uint8_t *y)
+{
+    {
+        *z = ((x->system) == MIR);
+    }
+}
 void owns_bool_mult(bool *z, const bool *x, const EdgeOwns *y)
 {
     *z = *x;
@@ -175,8 +180,8 @@ GrB_Info init_vertices(GrB_Vector *users, GrB_Vector *cards)
 {
     GrB_Info info;
     // 1 - 4 & 10 --- users
-    User user1 = {MALE, 52};
-    User user2 = {MALE, 25};
+    User user1 = {FEMALE, 52};
+    User user2 = {FEMALE, 25};
     User user3 = {FEMALE, 40};
     User user4 = {MALE, 42};
     User user10 = {MALE, 35};
@@ -191,9 +196,9 @@ GrB_Info init_vertices(GrB_Vector *users, GrB_Vector *cards)
     Card card6 = {MIR, 700000.0};
     Card card7 = {VISA, 800000.0};
     Card card8 = {MASTERCARD, 900000.0};
-    Card card9 = {MASTERCARD, 10000000.0};
-    Card card11 = {MASTERCARD, 99000000.0};
-    Card card12 = {MASTERCARD, 99000000.0};
+    Card card9 = {VISA, 10000000.0};
+    Card card11 = {MIR, 99000000.0};
+    Card card12 = {MIR, 99000000.0};
     TRY(GrB_Vector_setElement_UDT(*cards, &card5, 4));
     TRY(GrB_Vector_setElement_UDT(*cards, &card6, 5));
     TRY(GrB_Vector_setElement_UDT(*cards, &card7, 6));
@@ -265,7 +270,7 @@ int main()
     TRY(GrB_Vector_apply_IndexOp_UDT(v, NULL, NULL, user_age, users, &age, NULL));
     GxB_print(v, GxB_COMPLETE);
     TRY(GrB_Matrix_diag(&ID, v, 0));
-    
+
     // ------------------------------------------------------------------------
     // apply user filters
     // ------------------------------------------------------------------------
@@ -298,7 +303,18 @@ int main()
     // ------------------------------------------------------------------------
     // build filter for tx matrix
     // ------------------------------------------------------------------------
+    
+    // get cards with MIR payment system only
     TRY(GrB_Matrix_free(&ID));
+    TRY(GrB_Vector_free(&v));
+    TRY(GrB_Vector_new(&v, GrB_BOOL, VERTICES_NUMBER));
+    TRY(GrB_Vector_assign_BOOL(v, NULL, NULL, false, GrB_ALL, VERTICES_NUMBER, NULL));
+    GrB_IndexUnaryOp payment_system;
+    TRY(GrB_IndexUnaryOp_new(&payment_system, (GxB_index_unary_function)&check_payment_system, GrB_BOOL, card, GrB_UINT8));
+    uint8_t pay_sys = MIR;
+    TRY(GrB_Vector_apply_IndexOp_UDT(v, NULL, NULL, payment_system, cards, &pay_sys, NULL));
+    TRY(GrB_Vector_eWiseMult_BinaryOp(filtered_cards, NULL, NULL, GrB_LAND, filtered_cards, v, NULL));
+
     TRY(GrB_Matrix_diag(&ID, filtered_cards, 0));
     GxB_print(ID, GxB_COMPLETE);
 
