@@ -11,7 +11,7 @@
         {                                                                    \
             fprintf(stderr,                                                  \
                     #method " : GraphBLAS error %d in file %s at line %d\n", \
-                    _info,__FILE__, __LINE__);                                                  \
+                    _info, __FILE__, __LINE__);                              \
             return _info;                                                    \
         }                                                                    \
     }
@@ -34,13 +34,13 @@ typedef enum
 
 // vertices
 
-typedef struct User
+typedef struct
 {
     Gender gender;
     uint8_t age;
 } User;
 
-typedef struct Card
+typedef struct
 {
     System system;
     double limit;
@@ -48,12 +48,12 @@ typedef struct Card
 
 // edges
 
-typedef struct EdgeOwns
+typedef struct
 {
     int days;
 } EdgeOwns;
 
-typedef struct EdgeTX
+typedef struct
 {
     double sum;
     uint32_t count;
