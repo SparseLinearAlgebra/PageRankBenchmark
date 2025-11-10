@@ -4,16 +4,16 @@
 #include "../vendor/LAGraph/include/LAGraph.h"
 #include "../vendor/LAGraph/include/LAGraphX.h"
 
-#define TRY(method)                                     \
-    {                                                   \
-        GrB_Info _info = (method);                      \
-        if (_info != GrB_SUCCESS)                       \
-        {                                               \
-            fprintf(stderr,                             \
-                    #method " : GraphBLAS error %d \n", \
-                    _info);                             \
-            return _info;                               \
-        }                                               \
+#define TRY(method)                                                          \
+    {                                                                        \
+        GrB_Info _info = (method);                                           \
+        if (_info != GrB_SUCCESS)                                            \
+        {                                                                    \
+            fprintf(stderr,                                                  \
+                    #method " : GraphBLAS error %d in file %s at line %d\n", \
+                    _info,__FILE__, __LINE__);                                                  \
+            return _info;                                                    \
+        }                                                                    \
     }
 
 #define VERTICES_NUMBER 12
@@ -83,7 +83,7 @@ void owns_bool_add(bool *z, const bool *x, const bool *y)
 
 void tx_bool_mult(EdgeTX *z, const bool *x, const EdgeTX *y)
 {
-    if (*x)
+    if (*x) // вот этот иф не нужен в идеале, потому что мы проходимся только по значащим значениям
         *z = *y;
     else
         z->sum = 0, z->count = 0;
@@ -303,7 +303,7 @@ int main()
     // ------------------------------------------------------------------------
     // build filter for tx matrix
     // ------------------------------------------------------------------------
-    
+
     // get cards with MIR payment system only
     TRY(GrB_Matrix_free(&ID));
     TRY(GrB_Vector_free(&v));
