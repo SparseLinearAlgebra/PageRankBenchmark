@@ -70,37 +70,21 @@ void check_payment_system(bool *z, const Card *x, GrB_Index _i, GrB_Index _j, co
     *z = ((x->system) == *y);
 }
 
-void tx_bool_mult(EdgeTX *z, const bool *x, const EdgeTX *y)
+void tx_bool_mult(EdgeTX *z, const Card *x, const EdgeTX *y)
 {
-    if (*x)
-        *z = *y;
-    else
-    {
-        z->sum = 0;
-        z->count = 0;
-    }
+    *z = *y;
 }
 
-void tx_bool_mult_right(EdgeTX *z, const EdgeTX *x, const bool *y)
+void tx_bool_mult_right(EdgeTX *z, const EdgeTX *x, const Card *y)
 {
-    if (*y)
-        *z = *x;
-    else
-    {
-        z->sum = 0;
-        z->count = 0;
-    }
+
+    *z = *x;
 }
 
 void tx_bool_add(EdgeTX *z, const EdgeTX *x, const EdgeTX *y)
 {
-    if (x->count > 0 || y->count > 0)
-        *z = (x->count > 0) ? *x : *y;
-    else
-    {
-        z->sum = 0;
-        z->count = 0;
-    }
+
+    *z = *x;
 }
 
 void tx_is_nonempty(bool *z, const EdgeTX *x)
@@ -325,15 +309,19 @@ GrB_Info analyze_graph(GrB_Matrix tx_edge_mat, GrB_Matrix owns_edge_mat, GrB_Vec
     // get cards with MIR payment system only
     TRY(GrB_Matrix_free(&ID));
     TRY(GrB_Vector_free(&v));
-    TRY(GrB_Vector_new(&v, GrB_BOOL, VERTICES_NUMBER));
-    TRY(GrB_Vector_assign_BOOL(v, NULL, NULL, false, GrB_ALL, VERTICES_NUMBER, NULL));
+    TRY(GrB_Vector_new(&v, card, VERTICES_NUMBER));
     GrB_IndexUnaryOp payment_system;
     TRY(GrB_IndexUnaryOp_new(&payment_system, (GxB_index_unary_function)&check_payment_system, GrB_BOOL, card, GrB_UINT8));
     uint8_t pay_sys = MIR;
-    TRY(GrB_Vector_apply_IndexOp_UDT(v, NULL, NULL, payment_system, cards, &pay_sys, NULL));
-    TRY(GrB_Vector_eWiseMult_BinaryOp(filtered_cards, NULL, NULL, GrB_LAND, filtered_cards, v, NULL));
+    TRY(GrB_Vector_select_UDT(v, NULL, NULL, payment_system, cards, &pay_sys, NULL));
+    GxB_print(filtered_cards, GxB_COMPLETE);
+    GxB_print(v, GxB_COMPLETE);
+    GrB_Vector result_cards;
+    GrB_Vector_new(&result_cards, card, VERTICES_NUMBER);
+    TRY(GrB_Vector_assign(result_cards, filtered_cards, NULL, v, GrB_ALL, VERTICES_NUMBER, NULL));
+    GxB_print(result_cards, GxB_COMPLETE);
 
-    TRY(GrB_Matrix_diag(&ID, filtered_cards, 0));
+    TRY(GrB_Matrix_diag(&ID, result_cards, 0));
     GxB_print(ID, GxB_COMPLETE);
 
     // ------------------------------------------------------------------------
@@ -344,7 +332,7 @@ GrB_Info analyze_graph(GrB_Matrix tx_edge_mat, GrB_Matrix owns_edge_mat, GrB_Vec
     TRY(GrB_BinaryOp_new(&tx_bool_add_op, (GxB_binary_function)&tx_bool_add, tx_edge, tx_edge, tx_edge));
 
     GrB_BinaryOp tx_bool_mul_op;
-    TRY(GrB_BinaryOp_new(&tx_bool_mul_op, (GxB_binary_function)&tx_bool_mult, tx_edge, GrB_BOOL, tx_edge));
+    TRY(GrB_BinaryOp_new(&tx_bool_mul_op, (GxB_binary_function)&tx_bool_mult, tx_edge, card, tx_edge));
 
     EdgeTX tx_identity = {0.0, 0};
     GrB_Monoid tx_bool_monoid;
@@ -353,15 +341,16 @@ GrB_Info analyze_graph(GrB_Matrix tx_edge_mat, GrB_Matrix owns_edge_mat, GrB_Vec
     GrB_Semiring tx_bool_semiring;
     TRY(GrB_Semiring_new(&tx_bool_semiring, tx_bool_monoid, tx_bool_mul_op));
 
-    GrB_BinaryOp tx_bool_mul_right_op;
-    TRY(GrB_BinaryOp_new(&tx_bool_mul_right_op, (GxB_binary_function)&tx_bool_mult_right, tx_edge, tx_edge, GrB_BOOL));
-
-    GrB_Semiring tx_bool_semiring_right;
-    TRY(GrB_Semiring_new(&tx_bool_semiring_right, tx_bool_monoid, tx_bool_mul_right_op));
     GrB_Matrix tx_mat_filtered;
     TRY(GrB_Matrix_new(&tx_mat_filtered, tx_edge, VERTICES_NUMBER, VERTICES_NUMBER));
     TRY(GrB_mxm(tx_mat_filtered, NULL, NULL, tx_bool_semiring, ID, tx_edge_mat, NULL));
+
     GrB_Matrix tx_mat_filtered2;
+    GrB_BinaryOp tx_bool_mul_right_op;
+    TRY(GrB_BinaryOp_new(&tx_bool_mul_right_op, (GxB_binary_function)&tx_bool_mult_right, tx_edge, tx_edge, card));
+
+    GrB_Semiring tx_bool_semiring_right;
+    TRY(GrB_Semiring_new(&tx_bool_semiring_right, tx_bool_monoid, tx_bool_mul_right_op));
     TRY(GrB_Matrix_new(&tx_mat_filtered2, tx_edge, VERTICES_NUMBER, VERTICES_NUMBER));
     TRY(GrB_mxm(tx_mat_filtered2, NULL, NULL, tx_bool_semiring_right, tx_mat_filtered, ID, NULL));
 
