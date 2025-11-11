@@ -206,27 +206,18 @@ GrB_Info init_vertices(GrB_Vector *users, GrB_Vector *cards)
 }
 
 int banking_pagerank(
+    // output
     GrB_Vector *centrality,
     int *iters,
+    // input
+    GrB_Vector subgraph,
     const LAGraph_Graph G,
     float tol,
     int itermax)
 {
     GrB_Vector r = NULL, t = NULL;
     GrB_Matrix AT = NULL;
-
-    // ------------------------------------------------------------------------
-    // select adjacency matrix (use transpose if directed)
-    // ------------------------------------------------------------------------
-    if (G->kind == LAGraph_ADJACENCY_UNDIRECTED ||
-        G->is_symmetric_structure == LAGraph_TRUE)
-    {
-        AT = G->A;
-    }
-    else
-    {
-        AT = G->AT;
-    }
+    AT = G->AT;
 
     // ------------------------------------------------------------------------
     // initialization
@@ -238,7 +229,7 @@ int banking_pagerank(
     GrB_Vector_new(&r, GrB_FP64, n);
 
     double init = 1.0 / (double)n;
-    GrB_assign(r, NULL, NULL, init, GrB_ALL, n, NULL);
+    GrB_assign(r, subgraph, NULL, init, GrB_ALL, n, NULL);
 
     double rdiff = 1.0;
 
@@ -445,7 +436,7 @@ GrB_Info analyze_graph(GrB_Matrix tx_edge_mat, GrB_Matrix owns_edge_mat, GrB_Vec
 
     TRY(LAGraph_Cached_OutDegree(G, msg));
 
-    TRY(banking_pagerank(&pagerank_ans, &iteraions, G, 1e-4, 100));
+    TRY(banking_pagerank(&pagerank_ans, &iteraions, EXPSUMvec, G, 1e-4, 100));
     GxB_print(pagerank_ans, GxB_COMPLETE);
     GrB_free(&ID);
     GrB_free(&v);
