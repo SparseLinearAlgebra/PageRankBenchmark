@@ -55,20 +55,18 @@ typedef struct
 
 void check_user_age(bool *z, const User *x, GrB_Index _i, GrB_Index _j, const uint8_t *y) // EdgeOwns
 {
-    {
-        *z = (x->age > *y);
-    }
+
+    *z = (x->age > *y);
 }
 void check_payment_system(bool *z, const Card *x, GrB_Index _i, GrB_Index _j, const uint8_t *y)
 {
-    {
-        *z = ((x->system) == *y);
-    }
+
+    *z = ((x->system) == *y);
 }
 
 void tx_bool_mult(EdgeTX *z, const bool *x, const EdgeTX *y)
 {
-    if (*x) // вот этот иф не нужен в идеале, потому что мы проходимся только по значащим значениям
+    if (*x)
         *z = *y;
     else
     {
@@ -111,7 +109,7 @@ void exp_binop(double *z, const double *x)
 
 void F_op(double *z, const EdgeTX *x)
 {
-    *z = (x->sum/1000)/(x->count);
+    *z = (x->sum / 1000) / (x->count);
 }
 void divide(double *z, const double *x, const double *y)
 {
@@ -257,7 +255,7 @@ int LAGr_PageRank_NoTeleport(
         // r = A' * t
         GrB_mxv(r, NULL, NULL, GxB_PLUS_TIMES_FP64, AT, t, NULL);
 
-        // normalize r so that sum(r) = 1
+        // normalize r so that sum(r) = 1. otherwise we lost this invariant
         double sum_r = 0.0;
         GrB_reduce(&sum_r, NULL, GrB_PLUS_MONOID_FP64, r, NULL);
         if (sum_r > 0.0)
@@ -406,7 +404,7 @@ GrB_Info banking_page_rank(GrB_Matrix tx_edge_mat, GrB_Matrix owns_edge_mat, GrB
     TRY(GrB_Matrix_reduce_Monoid(EXPSUMvec, NULL, NULL, GrB_PLUS_MONOID_FP64, EXPmat, NULL));
     GxB_print(EXPSUMvec, GxB_COMPLETE);
 
-    // do masked kroneker (mask: EXPmat, A: EXPSUMvec, B: ID vector) (KRONEXPSUMmat)
+    // do masked mxm (mask: EXPmat, A: EXPSUMvec, B: ID vector) (EXPSUMmat)
 
     GrB_Vector id_final;
     TRY(GrB_Vector_new(&id_final, GrB_FP64, VERTICES_NUMBER));
@@ -418,19 +416,19 @@ GrB_Info banking_page_rank(GrB_Matrix tx_edge_mat, GrB_Matrix owns_edge_mat, GrB
     TRY(GrB_Matrix_new(&id_mat, GrB_FP64, 1, VERTICES_NUMBER));
     TRY(GrB_Row_assign(id_mat, NULL, NULL, id_final, 0, GrB_ALL, VERTICES_NUMBER, NULL));
 
-    GrB_Matrix KRONEXPSUMmat;
-    TRY(GrB_Matrix_new(&KRONEXPSUMmat, GrB_FP64, VERTICES_NUMBER, VERTICES_NUMBER));
+    GrB_Matrix EXPSUMmat;
+    TRY(GrB_Matrix_new(&EXPSUMmat, GrB_FP64, VERTICES_NUMBER, VERTICES_NUMBER));
 
-    TRY(GrB_mxm(KRONEXPSUMmat, EXPmat, NULL, GxB_PLUS_TIMES_FP64, v_mat, id_mat, NULL));
-    GxB_print(KRONEXPSUMmat, GxB_COMPLETE);
+    TRY(GrB_mxm(EXPSUMmat, EXPmat, NULL, GxB_PLUS_TIMES_FP64, v_mat, id_mat, NULL));
+    GxB_print(EXPSUMmat, GxB_COMPLETE);
 
-    // apply div to (EXPmat and KRONEXPSUMmat) (M)
+    // apply div to (EXPmat and EXPSUMmat) (M)
     GrB_Matrix M;
     TRY(GrB_Matrix_new(&M, GrB_FP64, VERTICES_NUMBER, VERTICES_NUMBER));
     // define add operation (A + B = A / B) (div)
     GrB_BinaryOp divide_op;
     TRY(GrB_BinaryOp_new(&divide_op, (GxB_binary_function)&divide, GrB_FP64, GrB_FP64, GrB_FP64));
-    TRY(GrB_Matrix_eWiseAdd_BinaryOp(M, NULL, NULL, divide_op, EXPmat, KRONEXPSUMmat, NULL));
+    TRY(GrB_Matrix_eWiseAdd_BinaryOp(M, NULL, NULL, divide_op, EXPmat, EXPSUMmat, NULL));
     GxB_print(M, GxB_COMPLETE);
 
     // ------------------------------------------------------------------------
@@ -449,6 +447,37 @@ GrB_Info banking_page_rank(GrB_Matrix tx_edge_mat, GrB_Matrix owns_edge_mat, GrB
 
     TRY(LAGr_PageRank_NoTeleport(&pagerank_ans, &iteraions, G, 1e-4, 100));
     GxB_print(pagerank_ans, GxB_COMPLETE);
+    GrB_free(&ID);
+    GrB_free(&v);
+    GrB_free(&owns_mat_filtered);
+    GrB_free(&filtered_cards);
+    GrB_free(&tx_bool_add_op);
+    GrB_free(&tx_bool_mul_op);
+    GrB_free(&tx_bool_mul_right_op);
+    GrB_free(&tx_bool_monoid);
+    GrB_free(&tx_bool_semiring);
+    GrB_free(&tx_bool_semiring_right);
+    GrB_free(&tx_mat_filtered);
+    GrB_free(&tx_mat_filtered2);
+    GrB_free(&tx_is_nonempty_op);
+    GrB_free(&keep);
+    GrB_free(&tx_clean);
+    GrB_free(&mean_op);
+    GrB_free(&exp_op);
+    GrB_free(&Fmat);
+    GrB_free(&EXPmat);
+    GrB_free(&EXPSUMvec);
+    GrB_free(&id_final);
+    GrB_free(&v_mat);
+    GrB_free(&id_mat);
+    GrB_free(&EXPSUMmat);
+    GrB_free(&divide_op);
+    GrB_free(&M);
+    GrB_free(&pagerank_ans);
+
+    LAGraph_Delete(&G, msg);
+
+    return GrB_SUCCESS;
 }
 
 int main()
@@ -490,4 +519,12 @@ int main()
     // ------------------------------------------------------------------------
 
     TRY(banking_page_rank(tx_edge_mat, owns_edge_mat, users, cards));
+    GrB_free(&tx_edge_mat);
+    GrB_free(&owns_edge_mat);
+    GrB_free(&users);
+    GrB_free(&cards);
+    GrB_free(&user);
+    GrB_free(&card);
+    GrB_free(&tx_edge);
+    LAGraph_Finalize(msg);
 }
