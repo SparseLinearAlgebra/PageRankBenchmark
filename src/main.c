@@ -421,7 +421,7 @@ GrB_Info banking_page_rank(GrB_Matrix tx_edge_mat, GrB_Matrix owns_edge_mat, GrB
     GrB_Matrix KRONEXPSUMmat;
     TRY(GrB_Matrix_new(&KRONEXPSUMmat, GrB_FP64, VERTICES_NUMBER, VERTICES_NUMBER));
 
-    TRY(GrB_mxm(KRONEXPSUMmat, NULL, NULL, GxB_PLUS_TIMES_FP64, v_mat, id_mat, NULL));
+    TRY(GrB_mxm(KRONEXPSUMmat, EXPmat, NULL, GxB_PLUS_TIMES_FP64, v_mat, id_mat, NULL));
     GxB_print(KRONEXPSUMmat, GxB_COMPLETE);
 
     // apply div to (EXPmat and KRONEXPSUMmat) (M)
@@ -430,7 +430,7 @@ GrB_Info banking_page_rank(GrB_Matrix tx_edge_mat, GrB_Matrix owns_edge_mat, GrB
     // define add operation (A + B = A / B) (div)
     GrB_BinaryOp divide_op;
     TRY(GrB_BinaryOp_new(&divide_op, (GxB_binary_function)&divide, GrB_FP64, GrB_FP64, GrB_FP64));
-    TRY(GrB_Matrix_eWiseAdd_BinaryOp(M, EXPmat, NULL, divide_op, EXPmat, KRONEXPSUMmat, NULL));
+    TRY(GrB_Matrix_eWiseAdd_BinaryOp(M, NULL, NULL, divide_op, EXPmat, KRONEXPSUMmat, NULL));
     GxB_print(M, GxB_COMPLETE);
 
     // ------------------------------------------------------------------------
