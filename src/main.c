@@ -61,7 +61,7 @@ void check_user_age(bool *z, const User *x, GrB_Index i, GrB_Index j, const uint
 
 bool user_filter_mul(bool *z, const User *x, const bool *y)
 {
-    *z = (x->age > 30) && (*y);
+    *z = *y;
 }
 
 void check_payment_system(bool *z, const Card *x, GrB_Index _i, GrB_Index _j, const uint8_t *y)
@@ -85,11 +85,6 @@ void tx_bool_add(EdgeTX *z, const EdgeTX *x, const EdgeTX *y)
 {
 
     *z = *x;
-}
-
-void tx_is_nonempty(bool *z, const EdgeTX *x)
-{
-    *z = (x->count != 0);
 }
 
 void exp_binop(double *z, const double *x)
@@ -201,19 +196,20 @@ int banking_pagerank(
     int *iters,
     // input
     GrB_Vector subgraph,
-    const LAGraph_Graph G,
+    const GrB_Matrix A,
     float tol,
     int itermax)
 {
     GrB_Vector r = NULL, t = NULL;
-    GrB_Matrix AT = NULL;
-    AT = G->AT;
+    GrB_Matrix AT;
+    GrB_Index n;
+    GrB_Matrix_nrows(&n, A);
+    GrB_Matrix_new(&AT, GrB_FP64, n, n);
+    GrB_transpose(AT, NULL, NULL, A, NULL);
 
     // ------------------------------------------------------------------------
     // initialization
     // ------------------------------------------------------------------------
-    GrB_Index n;
-    GrB_Matrix_nrows(&n, AT);
 
     GrB_Vector_new(&t, GrB_FP64, n);
     GrB_Vector_new(&r, GrB_FP64, n);
@@ -407,14 +403,7 @@ GrB_Info analyze_graph(GrB_Matrix tx_edge_mat, GrB_Matrix owns_edge_mat, GrB_Vec
     GrB_Vector pagerank_ans;
     TRY(GrB_Vector_new(&pagerank_ans, GrB_FP64, VERTICES_NUMBER));
 
-    LAGraph_Graph G = NULL;
-
-    TRY(LAGraph_New(&G, &M, LAGraph_ADJACENCY_DIRECTED, msg));
-    TRY(LAGraph_Cached_AT(G, msg));
-
-    TRY(LAGraph_Cached_OutDegree(G, msg));
-
-    TRY(banking_pagerank(&pagerank_ans, &iteraions, EXPSUMvec, G, 1e-4, 100));
+    TRY(banking_pagerank(&pagerank_ans, &iteraions, EXPSUMvec, M, 1e-4, 100));
     GxB_print(pagerank_ans, GxB_COMPLETE);
 
     // ------------------------------------------------------------------------
@@ -445,15 +434,13 @@ GrB_Info analyze_graph(GrB_Matrix tx_edge_mat, GrB_Matrix owns_edge_mat, GrB_Vec
     GrB_free(&M);
     GrB_free(&pagerank_ans);
 
-    LAGraph_Delete(&G, msg);
-
     return GrB_SUCCESS;
 }
 
 int main()
 {
-    LAGraph_Init(msg);
-    printf("LAGraph initialized.\n\n");
+    GrB_init(GrB_NONBLOCKING);
+    printf("GraphBLAS initialized.\n\n");
 
     // ------------------------------------------------------------------------
     // init edge matrices
