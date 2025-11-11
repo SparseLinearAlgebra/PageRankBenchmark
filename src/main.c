@@ -111,7 +111,7 @@ void exp_binop(double *z, const double *x)
 
 void F_op(double *z, const EdgeTX *x)
 {
-    *z = log(x->sum);
+    *z = (x->sum/1000)/(x->count);
 }
 void divide(double *z, const double *x, const double *y)
 {
@@ -124,20 +124,20 @@ GrB_Type tx_edge;
 GrB_Info init_edges(GrB_Matrix *tx_mat, GrB_Matrix *owns_mat)
 {
     GrB_Info info;
-    EdgeTX edge56 = {2223412.0, 56};
-    EdgeTX edge59 = {6223412.0, 59};
-    EdgeTX edge67 = {8913212.0, 67};
-    EdgeTX edge69 = {92223412.0, 69};
-    EdgeTX edge65 = {133214.1, 65};
-    EdgeTX edge95 = {1267325.99, 95};
-    EdgeTX edge611 = {1999999.1, 611};
-    EdgeTX edge116 = {6999999.1, 116};
-    EdgeTX edge511 = {9999999.1, 511};
-    EdgeTX edge115 = {8999999.1, 115};
-    EdgeTX edge127 = {8999999.1, 127};
-    EdgeTX edge712 = {8999999.1, 712};
-    EdgeTX edge912 = {899999999.1, 912};
-    EdgeTX edge129 = {99999999.1, 129};
+    EdgeTX edge56 = {23412.0, 6};
+    EdgeTX edge59 = {62412.0, 9};
+    EdgeTX edge67 = {81312.0, 7};
+    EdgeTX edge69 = {92223.0, 9};
+    EdgeTX edge65 = {13214.1, 5};
+    EdgeTX edge95 = {16325.99, 9};
+    EdgeTX edge611 = {19999.1, 6};
+    EdgeTX edge116 = {69999.1, 16};
+    EdgeTX edge511 = {99999.1, 5};
+    EdgeTX edge115 = {79999.1, 15};
+    EdgeTX edge127 = {59999.1, 12};
+    EdgeTX edge712 = {8999.1, 7};
+    EdgeTX edge912 = {49999.1, 12};
+    EdgeTX edge129 = {999999.1, 9};
 
     TRY(GrB_Matrix_setElement_UDT(*tx_mat, &edge56, 4, 5));
     TRY(GrB_Matrix_setElement_UDT(*tx_mat, &edge59, 4, 8));
@@ -207,7 +207,80 @@ GrB_Info init_vertices(GrB_Vector *users, GrB_Vector *cards)
     return GrB_SUCCESS;
 }
 
-GrB_Info banking_page_rank(GrB_Matrix tx_edge_mat, GrB_Matrix owns_edge_mat, GrB_Vector users, GrB_Vector cards){
+int LAGr_PageRank_NoTeleport(
+    GrB_Vector *centrality,
+    int *iters,
+    const LAGraph_Graph G,
+    float tol,
+    int itermax)
+{
+    GrB_Vector r = NULL, t = NULL;
+    GrB_Matrix AT = NULL;
+
+    // ------------------------------------------------------------------------
+    // select adjacency matrix (use transpose if directed)
+    // ------------------------------------------------------------------------
+    if (G->kind == LAGraph_ADJACENCY_UNDIRECTED ||
+        G->is_symmetric_structure == LAGraph_TRUE)
+    {
+        AT = G->A;
+    }
+    else
+    {
+        AT = G->AT;
+    }
+
+    // ------------------------------------------------------------------------
+    // initialization
+    // ------------------------------------------------------------------------
+    GrB_Index n;
+    GrB_Matrix_nrows(&n, AT);
+
+    GrB_Vector_new(&t, GrB_FP64, n);
+    GrB_Vector_new(&r, GrB_FP64, n);
+
+    double init = 1.0 / (double)n;
+    GrB_assign(r, NULL, NULL, init, GrB_ALL, n, NULL);
+
+    double rdiff = 1.0;
+
+    // ------------------------------------------------------------------------
+    // iterations
+    // ------------------------------------------------------------------------
+    for ((*iters) = 0; rdiff > tol && (*iters) < itermax; (*iters)++)
+    {
+        // swap
+        GrB_Vector temp = t;
+        t = r;
+        r = temp;
+
+        // r = A' * t
+        GrB_mxv(r, NULL, NULL, GxB_PLUS_TIMES_FP64, AT, t, NULL);
+
+        // normalize r so that sum(r) = 1
+        double sum_r = 0.0;
+        GrB_reduce(&sum_r, NULL, GrB_PLUS_MONOID_FP64, r, NULL);
+        if (sum_r > 0.0)
+        {
+            GrB_apply(r, NULL, NULL, GrB_DIV_FP64, r, sum_r, NULL);
+        }
+
+        // compute difference
+        GrB_assign(t, NULL, GrB_MINUS_FP64, r, GrB_ALL, n, NULL);
+        GrB_apply(t, NULL, NULL, GrB_ABS_FP64, t, NULL);
+        GrB_reduce(&rdiff, NULL, GrB_PLUS_MONOID_FP64, t, NULL);
+    }
+
+    // ------------------------------------------------------------------------
+    // finalize
+    // ------------------------------------------------------------------------
+    *centrality = r;
+    GrB_free(&t);
+    return GrB_SUCCESS;
+}
+
+GrB_Info banking_page_rank(GrB_Matrix tx_edge_mat, GrB_Matrix owns_edge_mat, GrB_Vector users, GrB_Vector cards)
+{
     // ------------------------------------------------------------------------
     // build user filters
     // ------------------------------------------------------------------------
@@ -337,7 +410,7 @@ GrB_Info banking_page_rank(GrB_Matrix tx_edge_mat, GrB_Matrix owns_edge_mat, GrB
 
     GrB_Vector id_final;
     TRY(GrB_Vector_new(&id_final, GrB_FP64, VERTICES_NUMBER));
-    TRY(GrB_Vector_assign_BOOL(id_final, NULL, NULL, 1.0, GrB_ALL, VERTICES_NUMBER, NULL));
+    TRY(GrB_Vector_assign_BOOL(id_final, NULL, NULL, true, GrB_ALL, VERTICES_NUMBER, NULL));
     GrB_Matrix v_mat, id_mat;
     TRY(GrB_Matrix_new(&v_mat, GrB_FP64, VERTICES_NUMBER, 1));
     TRY(GrB_Col_assign(v_mat, NULL, NULL, EXPSUMvec, GrB_ALL, VERTICES_NUMBER, 0, NULL));
@@ -374,7 +447,7 @@ GrB_Info banking_page_rank(GrB_Matrix tx_edge_mat, GrB_Matrix owns_edge_mat, GrB
 
     TRY(LAGraph_Cached_OutDegree(G, msg));
 
-    TRY(LAGr_PageRank(&pagerank_ans, &iteraions, G, 0.85, 1e-4, 100, msg));
+    TRY(LAGr_PageRank_NoTeleport(&pagerank_ans, &iteraions, G, 1e-4, 100));
     GxB_print(pagerank_ans, GxB_COMPLETE);
 }
 
@@ -416,6 +489,5 @@ int main()
     // run solver
     // ------------------------------------------------------------------------
 
-    TRY(banking_page_rank(tx_edge_mat,owns_edge_mat,users,cards));
-
+    TRY(banking_page_rank(tx_edge_mat, owns_edge_mat, users, cards));
 }
