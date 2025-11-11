@@ -1,0 +1,1034 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4.2 (2aeb623e1d, 2025-05-12)"
+   sodipodi:docname="Graph.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="0.46362714"
+     inkscape:cx="395.79219"
+     inkscape:cy="421.67506"
+     inkscape:window-width="1920"
+     inkscape:window-height="1131"
+     inkscape:window-x="0"
+     inkscape:window-y="32"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1">
+    <marker
+       style="overflow:visible"
+       id="ConcaveTriangle"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Concave triangle arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.7)"
+         d="M -2,-4 9,0 -2,4 c 2,-2.33 2,-5.66 0,-8 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+         id="path7" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="ConcaveTriangle-1"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Concave triangle arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.7)"
+         d="M -2,-4 9,0 -2,4 c 2,-2.33 2,-5.66 0,-8 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+         id="path7-2" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="ConcaveTriangle-8"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Concave triangle arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.7)"
+         d="M -2,-4 9,0 -2,4 c 2,-2.33 2,-5.66 0,-8 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+         id="path7-5" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="ConcaveTriangle-8-5"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Concave triangle arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.7)"
+         d="M -2,-4 9,0 -2,4 c 2,-2.33 2,-5.66 0,-8 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+         id="path7-5-6" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="ConcaveTriangle-4"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Concave triangle arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.7)"
+         d="M -2,-4 9,0 -2,4 c 2,-2.33 2,-5.66 0,-8 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+         id="path7-4" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="ConcaveTriangle-5"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Concave triangle arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.7)"
+         d="M -2,-4 9,0 -2,4 c 2,-2.33 2,-5.66 0,-8 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+         id="path7-9" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="ConcaveTriangle-57"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Concave triangle arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.7)"
+         d="M -2,-4 9,0 -2,4 c 2,-2.33 2,-5.66 0,-8 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+         id="path7-41" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="ConcaveTriangle-5-8"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Concave triangle arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.7)"
+         d="M -2,-4 9,0 -2,4 c 2,-2.33 2,-5.66 0,-8 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+         id="path7-9-8" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="ConcaveTriangle-5-4"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Concave triangle arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.7)"
+         d="M -2,-4 9,0 -2,4 c 2,-2.33 2,-5.66 0,-8 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+         id="path7-9-3" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="ConcaveTriangle-5-88"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Concave triangle arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.7)"
+         d="M -2,-4 9,0 -2,4 c 2,-2.33 2,-5.66 0,-8 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+         id="path7-9-89" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="ConcaveTriangle-5-0"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Concave triangle arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.7)"
+         d="M -2,-4 9,0 -2,4 c 2,-2.33 2,-5.66 0,-8 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+         id="path7-9-30" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="ConcaveTriangle-5-5"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Concave triangle arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.7)"
+         d="M -2,-4 9,0 -2,4 c 2,-2.33 2,-5.66 0,-8 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+         id="path7-9-9" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="ConcaveTriangle-5-47"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Concave triangle arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.7)"
+         d="M -2,-4 9,0 -2,4 c 2,-2.33 2,-5.66 0,-8 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+         id="path7-9-7" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="ConcaveTriangle-5-9"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Concave triangle arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.7)"
+         d="M -2,-4 9,0 -2,4 c 2,-2.33 2,-5.66 0,-8 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+         id="path7-9-36" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="ConcaveTriangle-5-51"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Concave triangle arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.7)"
+         d="M -2,-4 9,0 -2,4 c 2,-2.33 2,-5.66 0,-8 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+         id="path7-9-1" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="ConcaveTriangle-5-6"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Concave triangle arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.7)"
+         d="M -2,-4 9,0 -2,4 c 2,-2.33 2,-5.66 0,-8 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+         id="path7-9-2" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="ConcaveTriangle-5-7"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Concave triangle arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.7)"
+         d="M -2,-4 9,0 -2,4 c 2,-2.33 2,-5.66 0,-8 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+         id="path7-9-24" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="ConcaveTriangle-5-81"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Concave triangle arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.7)"
+         d="M -2,-4 9,0 -2,4 c 2,-2.33 2,-5.66 0,-8 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+         id="path7-9-31" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="ConcaveTriangle-5-3"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Concave triangle arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.7)"
+         d="M -2,-4 9,0 -2,4 c 2,-2.33 2,-5.66 0,-8 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+         id="path7-9-91" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="ConcaveTriangle-5-05"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Concave triangle arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.7)"
+         d="M -2,-4 9,0 -2,4 c 2,-2.33 2,-5.66 0,-8 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+         id="path7-9-6" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="ConcaveTriangle-5-62"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Concave triangle arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.7)"
+         d="M -2,-4 9,0 -2,4 c 2,-2.33 2,-5.66 0,-8 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+         id="path7-9-67" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="ConcaveTriangle-5-82"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Concave triangle arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.7)"
+         d="M -2,-4 9,0 -2,4 c 2,-2.33 2,-5.66 0,-8 z"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+         id="path7-9-99" />
+    </marker>
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g3"
+       transform="translate(-14.267032,-29.491438)">
+      <rect
+         style="opacity:0.7;fill:#a10000;fill-opacity:0.214;stroke:#5f0000;stroke-width:0.465;stroke-miterlimit:1.45"
+         id="rect1"
+         width="37.664967"
+         height="28.819403"
+         x="15.979076"
+         y="30.531446" />
+      <text
+         xml:space="preserve"
+         style="font-weight:bold;font-size:6.35px;line-height:1.25;font-family:'Virgil 3 YOFF';-inkscape-font-specification:'Virgil 3 YOFF, Bold';font-variant-ligatures:none;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+         x="17.976461"
+         y="36.808945"
+         id="text1"><tspan
+           sodipodi:role="line"
+           id="tspan1"
+           style="stroke-width:0.264583"
+           x="17.976461"
+           y="36.808945">id: 4</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-weight:bold;font-size:6.35px;line-height:1.25;font-family:'Virgil 3 YOFF';-inkscape-font-specification:'Virgil 3 YOFF, Bold';font-variant-ligatures:none;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+         x="17.97646"
+         y="46.225182"
+         id="text2"><tspan
+           sodipodi:role="line"
+           id="tspan2"
+           style="stroke-width:0.264583"
+           x="17.97646"
+           y="46.225182">Gender: F</tspan><tspan
+           sodipodi:role="line"
+           style="stroke-width:0.264583"
+           x="17.97646"
+           y="54.162682"
+           id="tspan3">Adge: 52</tspan></text>
+    </g>
+    <g
+       id="g3-3"
+       transform="translate(142.26374,178.79117)">
+      <rect
+         style="opacity:0.7;fill:#a10000;fill-opacity:0.214;stroke:#5f0000;stroke-width:0.465;stroke-miterlimit:1.45"
+         id="rect1-5"
+         width="37.664967"
+         height="28.819403"
+         x="15.979076"
+         y="30.531446" />
+      <path
+         style="fill:none;stroke:#9b0000;stroke-width:0.665;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#ConcaveTriangle-5)"
+         d="M 33.487593,30.535039 -11.310889,-6.5592425"
+         id="path6-1"
+         sodipodi:nodetypes="cc" />
+      <text
+         xml:space="preserve"
+         style="font-weight:bold;font-size:6.35px;line-height:1.25;font-family:'Virgil 3 YOFF';-inkscape-font-specification:'Virgil 3 YOFF, Bold';font-variant-ligatures:none;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+         x="17.976461"
+         y="36.808945"
+         id="text1-6"><tspan
+           sodipodi:role="line"
+           id="tspan1-2"
+           style="stroke-width:0.264583"
+           x="17.976461"
+           y="36.808945">id: 2</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-weight:bold;font-size:6.35px;line-height:1.25;font-family:'Virgil 3 YOFF';-inkscape-font-specification:'Virgil 3 YOFF, Bold';font-variant-ligatures:none;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+         x="17.97646"
+         y="46.225182"
+         id="text2-9"><tspan
+           sodipodi:role="line"
+           id="tspan2-1"
+           style="stroke-width:0.264583"
+           x="17.97646"
+           y="46.225182">Gender: F</tspan><tspan
+           sodipodi:role="line"
+           style="stroke-width:0.264583"
+           x="17.97646"
+           y="54.162682"
+           id="tspan3-2">Adge: 52</tspan></text>
+    </g>
+    <g
+       id="g3-6"
+       transform="translate(103.88889,-29.491438)">
+      <rect
+         style="opacity:0.7;fill:#a10000;fill-opacity:0.214;stroke:#5f0000;stroke-width:0.465;stroke-miterlimit:1.45"
+         id="rect1-0"
+         width="37.664967"
+         height="28.819403"
+         x="15.979076"
+         y="30.531446" />
+      <text
+         xml:space="preserve"
+         style="font-weight:bold;font-size:6.35px;line-height:1.25;font-family:'Virgil 3 YOFF';-inkscape-font-specification:'Virgil 3 YOFF, Bold';font-variant-ligatures:none;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+         x="17.976461"
+         y="36.808945"
+         id="text1-62"><tspan
+           sodipodi:role="line"
+           id="tspan1-6"
+           style="stroke-width:0.264583"
+           x="17.976461"
+           y="36.808945">id: 3</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-weight:bold;font-size:6.35px;line-height:1.25;font-family:'Virgil 3 YOFF';-inkscape-font-specification:'Virgil 3 YOFF, Bold';font-variant-ligatures:none;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+         x="17.97646"
+         y="46.225182"
+         id="text2-1"><tspan
+           sodipodi:role="line"
+           id="tspan2-8"
+           style="stroke-width:0.264583"
+           x="17.97646"
+           y="46.225182">Gender: F</tspan><tspan
+           sodipodi:role="line"
+           style="stroke-width:0.264583"
+           x="17.97646"
+           y="54.162682"
+           id="tspan3-7">Adge: 52</tspan></text>
+    </g>
+    <g
+       id="g3-37"
+       transform="translate(222.04481,-29.491438)">
+      <rect
+         style="opacity:0.7;fill:#a10000;fill-opacity:0.214;stroke:#5f0000;stroke-width:0.465;stroke-miterlimit:1.45"
+         id="rect1-59"
+         width="37.664967"
+         height="28.819403"
+         x="15.979076"
+         y="30.531446" />
+      <text
+         xml:space="preserve"
+         style="font-weight:bold;font-size:6.35px;line-height:1.25;font-family:'Virgil 3 YOFF';-inkscape-font-specification:'Virgil 3 YOFF, Bold';font-variant-ligatures:none;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+         x="17.976461"
+         y="36.808945"
+         id="text1-2"><tspan
+           sodipodi:role="line"
+           id="tspan1-28"
+           style="stroke-width:0.264583"
+           x="17.976461"
+           y="36.808945">id: 10</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-weight:bold;font-size:6.35px;line-height:1.25;font-family:'Virgil 3 YOFF';-inkscape-font-specification:'Virgil 3 YOFF, Bold';font-variant-ligatures:none;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+         x="17.97646"
+         y="46.225182"
+         id="text2-97"><tspan
+           sodipodi:role="line"
+           id="tspan2-3"
+           style="stroke-width:0.264583"
+           x="17.97646"
+           y="46.225182">Gender: F</tspan><tspan
+           sodipodi:role="line"
+           style="stroke-width:0.264583"
+           x="17.97646"
+           y="54.162682"
+           id="tspan3-6">Adge: 52</tspan></text>
+    </g>
+    <g
+       id="g3-1"
+       transform="translate(-19.773495,178.79117)">
+      <rect
+         style="opacity:0.7;fill:#a10000;fill-opacity:0.214;stroke:#5f0000;stroke-width:0.465;stroke-miterlimit:1.45"
+         id="rect1-9"
+         width="37.664967"
+         height="28.819403"
+         x="15.979076"
+         y="30.531446" />
+      <text
+         xml:space="preserve"
+         style="font-weight:bold;font-size:6.35px;line-height:1.25;font-family:'Virgil 3 YOFF';-inkscape-font-specification:'Virgil 3 YOFF, Bold';font-variant-ligatures:none;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+         x="17.976461"
+         y="36.808945"
+         id="text1-4"><tspan
+           sodipodi:role="line"
+           id="tspan1-7"
+           style="stroke-width:0.264583"
+           x="17.976461"
+           y="36.808945">id: 1</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-weight:bold;font-size:6.35px;line-height:1.25;font-family:'Virgil 3 YOFF';-inkscape-font-specification:'Virgil 3 YOFF, Bold';font-variant-ligatures:none;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+         x="17.97646"
+         y="46.225182"
+         id="text2-8"><tspan
+           sodipodi:role="line"
+           id="tspan2-4"
+           style="stroke-width:0.264583"
+           x="17.97646"
+           y="46.225182">Gender: F</tspan><tspan
+           sodipodi:role="line"
+           style="stroke-width:0.264583"
+           x="17.97646"
+           y="54.162682"
+           id="tspan3-5">Adge: 52</tspan></text>
+    </g>
+    <g
+       id="g6"
+       transform="translate(149.16494,-15.940974)">
+      <rect
+         style="opacity:0.7;fill:#0500f5;fill-opacity:0.214;stroke:#5f0000;stroke-width:0.465;stroke-miterlimit:1.45"
+         id="rect3"
+         width="49.934612"
+         height="30.531454"
+         x="66.199028"
+         y="72.191185" />
+      <text
+         xml:space="preserve"
+         style="font-weight:bold;font-size:6.35px;line-height:1.25;font-family:'Virgil 3 YOFF';-inkscape-font-specification:'Virgil 3 YOFF, Bold';font-variant-ligatures:none;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+         x="67.911072"
+         y="78.754021"
+         id="text4"><tspan
+           sodipodi:role="line"
+           id="tspan4"
+           style="stroke-width:0.264583"
+           x="67.911072"
+           y="78.754021">id: 11</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-weight:bold;font-size:6.35px;line-height:1.25;font-family:'Virgil 3 YOFF';-inkscape-font-specification:'Virgil 3 YOFF, Bold';font-variant-ligatures:none;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+         x="67.911072"
+         y="87.884918"
+         id="text5"><tspan
+           sodipodi:role="line"
+           id="tspan5"
+           style="stroke-width:0.264583"
+           x="67.911072"
+           y="87.884918">System: MIR</tspan><tspan
+           sodipodi:role="line"
+           style="stroke-width:0.264583"
+           x="67.911072"
+           y="95.822418"
+           id="tspan6">Limit: 60 000</tspan></text>
+    </g>
+    <g
+       id="g6-9"
+       transform="translate(257.85215,-15.940974)">
+      <rect
+         style="opacity:0.7;fill:#0500f5;fill-opacity:0.214;stroke:#5f0000;stroke-width:0.465;stroke-miterlimit:1.45"
+         id="rect3-3"
+         width="49.934612"
+         height="30.531454"
+         x="66.199028"
+         y="72.191185" />
+      <text
+         xml:space="preserve"
+         style="font-weight:bold;font-size:6.35px;line-height:1.25;font-family:'Virgil 3 YOFF';-inkscape-font-specification:'Virgil 3 YOFF, Bold';font-variant-ligatures:none;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+         x="67.911072"
+         y="78.754021"
+         id="text4-7"><tspan
+           sodipodi:role="line"
+           id="tspan4-4"
+           style="stroke-width:0.264583"
+           x="67.911072"
+           y="78.754021">id: 12</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-weight:bold;font-size:6.35px;line-height:1.25;font-family:'Virgil 3 YOFF';-inkscape-font-specification:'Virgil 3 YOFF, Bold';font-variant-ligatures:none;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+         x="67.911072"
+         y="87.884918"
+         id="text5-5"><tspan
+           sodipodi:role="line"
+           id="tspan5-2"
+           style="stroke-width:0.264583"
+           x="67.911072"
+           y="87.884918">System: MIR</tspan><tspan
+           sodipodi:role="line"
+           style="stroke-width:0.264583"
+           x="67.911072"
+           y="95.822418"
+           id="tspan6-5">Limit: 60 000</tspan></text>
+    </g>
+    <g
+       id="g6-3"
+       transform="translate(40.477733,-15.940974)">
+      <rect
+         style="opacity:0.7;fill:#0500f5;fill-opacity:0.214;stroke:#5f0000;stroke-width:0.465;stroke-miterlimit:1.45"
+         id="rect3-0"
+         width="49.934612"
+         height="30.531454"
+         x="66.199028"
+         y="72.191185" />
+      <text
+         xml:space="preserve"
+         style="font-weight:bold;font-size:6.35px;line-height:1.25;font-family:'Virgil 3 YOFF';-inkscape-font-specification:'Virgil 3 YOFF, Bold';font-variant-ligatures:none;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+         x="67.911072"
+         y="78.754021"
+         id="text4-78"><tspan
+           sodipodi:role="line"
+           id="tspan4-6"
+           style="stroke-width:0.264583"
+           x="67.911072"
+           y="78.754021">id: 6</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-weight:bold;font-size:6.35px;line-height:1.25;font-family:'Virgil 3 YOFF';-inkscape-font-specification:'Virgil 3 YOFF, Bold';font-variant-ligatures:none;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+         x="67.911072"
+         y="87.884918"
+         id="text5-8"><tspan
+           sodipodi:role="line"
+           id="tspan5-8"
+           style="stroke-width:0.264583"
+           x="67.911072"
+           y="87.884918">System: MIR</tspan><tspan
+           sodipodi:role="line"
+           style="stroke-width:0.264583"
+           x="67.911072"
+           y="95.822418"
+           id="tspan6-4">Limit: 60 000</tspan></text>
+    </g>
+    <g
+       id="g6-2"
+       transform="translate(145.58346,67.304255)">
+      <rect
+         style="opacity:0.7;fill:#0500f5;fill-opacity:0.214;stroke:#5f0000;stroke-width:0.465;stroke-miterlimit:1.45"
+         id="rect3-06"
+         width="49.934612"
+         height="30.531454"
+         x="66.199028"
+         y="72.191185" />
+      <text
+         xml:space="preserve"
+         style="font-weight:bold;font-size:6.35px;line-height:1.25;font-family:'Virgil 3 YOFF';-inkscape-font-specification:'Virgil 3 YOFF, Bold';font-variant-ligatures:none;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+         x="67.911072"
+         y="78.754021"
+         id="text4-8"><tspan
+           sodipodi:role="line"
+           id="tspan4-9"
+           style="stroke-width:0.264583"
+           x="67.911072"
+           y="78.754021">id: 7</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-weight:bold;font-size:6.35px;line-height:1.25;font-family:'Virgil 3 YOFF';-inkscape-font-specification:'Virgil 3 YOFF, Bold';font-variant-ligatures:none;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+         x="67.911072"
+         y="87.884918"
+         id="text5-2"><tspan
+           sodipodi:role="line"
+           id="tspan5-6"
+           style="stroke-width:0.264583"
+           x="67.911072"
+           y="87.884918">System: MIR</tspan><tspan
+           sodipodi:role="line"
+           style="stroke-width:0.264583"
+           x="67.911072"
+           y="95.822418"
+           id="tspan6-6">Limit: 60 000</tspan></text>
+    </g>
+    <g
+       id="g6-4"
+       transform="translate(36.615339,67.304255)">
+      <rect
+         style="opacity:0.7;fill:#0500f5;fill-opacity:0.214;stroke:#5f0000;stroke-width:0.465;stroke-miterlimit:1.45"
+         id="rect3-8"
+         width="49.934612"
+         height="30.531454"
+         x="66.199028"
+         y="72.191185" />
+      <text
+         xml:space="preserve"
+         style="font-weight:bold;font-size:6.35px;line-height:1.25;font-family:'Virgil 3 YOFF';-inkscape-font-specification:'Virgil 3 YOFF, Bold';font-variant-ligatures:none;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+         x="67.911072"
+         y="78.754021"
+         id="text4-71"><tspan
+           sodipodi:role="line"
+           id="tspan4-7"
+           style="stroke-width:0.264583"
+           x="67.911072"
+           y="78.754021">id: 8</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-weight:bold;font-size:6.35px;line-height:1.25;font-family:'Virgil 3 YOFF';-inkscape-font-specification:'Virgil 3 YOFF, Bold';font-variant-ligatures:none;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+         x="67.911072"
+         y="87.884918"
+         id="text5-27"><tspan
+           sodipodi:role="line"
+           id="tspan5-22"
+           style="stroke-width:0.264583"
+           x="67.911072"
+           y="87.884918">System: MIR</tspan><tspan
+           sodipodi:role="line"
+           style="stroke-width:0.264583"
+           x="67.911072"
+           y="95.822418"
+           id="tspan6-61">Limit: 60 000</tspan></text>
+    </g>
+    <g
+       id="g6-94"
+       transform="translate(-72.352781,67.304255)">
+      <g
+         id="g7">
+        <rect
+           style="opacity:0.7;fill:#0500f5;fill-opacity:0.214;stroke:#5f0000;stroke-width:0.465;stroke-miterlimit:1.45"
+           id="rect3-9"
+           width="49.934612"
+           height="30.531454"
+           x="66.199028"
+           y="72.191185" />
+      </g>
+      <text
+         xml:space="preserve"
+         style="font-weight:bold;font-size:6.35px;line-height:1.25;font-family:'Virgil 3 YOFF';-inkscape-font-specification:'Virgil 3 YOFF, Bold';font-variant-ligatures:none;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+         x="67.911072"
+         y="78.754021"
+         id="text4-0"><tspan
+           sodipodi:role="line"
+           id="tspan4-91"
+           style="stroke-width:0.264583"
+           x="67.911072"
+           y="78.754021">id: 9</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-weight:bold;font-size:6.35px;line-height:1.25;font-family:'Virgil 3 YOFF';-inkscape-font-specification:'Virgil 3 YOFF, Bold';font-variant-ligatures:none;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+         x="67.911072"
+         y="87.884918"
+         id="text5-7"><tspan
+           sodipodi:role="line"
+           id="tspan5-7"
+           style="stroke-width:0.264583"
+           x="67.911072"
+           y="87.884918">System: MIR</tspan><tspan
+           sodipodi:role="line"
+           style="stroke-width:0.264583"
+           x="67.911072"
+           y="95.822418"
+           id="tspan6-1">Limit: 60 000</tspan></text>
+    </g>
+    <g
+       id="g6-7"
+       transform="translate(-68.209476,-15.940974)">
+      <rect
+         style="opacity:0.7;fill:#0500f5;fill-opacity:0.214;stroke:#5f0000;stroke-width:0.465;stroke-miterlimit:1.45"
+         id="rect3-6"
+         width="49.934612"
+         height="30.531454"
+         x="66.199028"
+         y="72.191185" />
+      <text
+         xml:space="preserve"
+         style="font-weight:bold;font-size:6.35px;line-height:1.25;font-family:'Virgil 3 YOFF';-inkscape-font-specification:'Virgil 3 YOFF, Bold';font-variant-ligatures:none;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+         x="67.911072"
+         y="78.754021"
+         id="text4-73"><tspan
+           sodipodi:role="line"
+           id="tspan4-65"
+           style="stroke-width:0.264583"
+           x="67.911072"
+           y="78.754021">id: 5</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-weight:bold;font-size:6.35px;line-height:1.25;font-family:'Virgil 3 YOFF';-inkscape-font-specification:'Virgil 3 YOFF, Bold';font-variant-ligatures:none;letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+         x="67.911072"
+         y="87.884918"
+         id="text5-6"><tspan
+           sodipodi:role="line"
+           id="tspan5-3"
+           style="stroke-width:0.264583"
+           x="67.911072"
+           y="87.884918">System: MIR</tspan><tspan
+           sodipodi:role="line"
+           style="stroke-width:0.264583"
+           x="67.911072"
+           y="95.822418"
+           id="tspan6-9">Limit: 60 000</tspan></text>
+    </g>
+    <path
+       style="fill:none;stroke:#9b0000;stroke-width:0.665;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#ConcaveTriangle)"
+       d="m 21.400549,29.675425 7.418856,22.827254"
+       id="path6"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#9b0000;stroke-width:0.665;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#ConcaveTriangle-1)"
+       d="m 227.12709,29.709055 31.38747,19.973852"
+       id="path6-9"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#9b0000;stroke-width:0.665;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#ConcaveTriangle-8)"
+       d="M 260.64701,26.066877 361.94294,47.182083"
+       id="path6-6"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#9b0000;stroke-width:0.665;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#ConcaveTriangle-8-5)"
+       d="m 125.51727,31.490184 52.21735,21.400541"
+       id="path6-6-5"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#9b0000;stroke-width:0.665;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#ConcaveTriangle-4)"
+       d="m 15.318833,209.14112 3.709428,-35.38223"
+       id="path6-63"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#9b0000;stroke-width:0.665;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#ConcaveTriangle-57)"
+       d="m 176.09282,209.20253 56.49744,-36.5236"
+       id="path6-97"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#0000ca;stroke-width:0.665;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#ConcaveTriangle-5)"
+       d="M 24.253955,86.458215 20.544526,139.24623"
+       id="path8" />
+    <path
+       style="fill:none;stroke:#0000ca;stroke-width:0.665;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#ConcaveTriangle-5-8)"
+       d="M 13.41833,138.57784 11.706286,90.640603"
+       id="path8-8"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#0000ca;stroke-width:0.665;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#ConcaveTriangle-5-4)"
+       d="M 47.912109,60.072909 104.98024,64.06767"
+       id="path8-86"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#0000ca;stroke-width:0.665;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#ConcaveTriangle-5-88)"
+       d="M 106.07951,81.956138 51.579448,80.529429"
+       id="path8-6"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#0000ca;stroke-width:0.665;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#ConcaveTriangle-5-0)"
+       d="m 158.29568,64.545097 53.92939,1.426701"
+       id="path8-5"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#0000ca;stroke-width:0.665;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#ConcaveTriangle-5-5)"
+       d="m 214.65222,80.580894 -53.35869,0.285338"
+       id="path8-9"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#0000ca;stroke-width:0.665;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#ConcaveTriangle-5-47)"
+       d="M 107.02995,87.268273 37.406833,136.6322"
+       id="path8-81"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#0000ca;stroke-width:0.665;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#ConcaveTriangle-5-9)"
+       d="M 43.850097,158.66483 120.03605,89.897739"
+       id="path8-2"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#0000ca;stroke-width:0.665;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#ConcaveTriangle-5-51)"
+       d="M 216.77531,138.27203 328.34351,88.908091"
+       id="path8-50"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#0000ca;stroke-width:0.665;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#ConcaveTriangle-5-6)"
+       d="M 359.17203,88.829754 256.73474,137.623"
+       id="path8-62"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#0000ca;stroke-width:0.665;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#ConcaveTriangle-5-7)"
+       d="M 369.99509,88.059697 C 272.69699,245.72191 169.17941,320.7253 48.416183,166.52837"
+       id="path8-29"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#0000ca;stroke-width:0.665;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#ConcaveTriangle-5-81)"
+       d="M 36.041823,170.81872 C 257.07219,431.2274 301.36179,224.04519 372.45844,87.784591"
+       id="path8-3"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#0000ca;stroke-width:0.665;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#ConcaveTriangle-5-3)"
+       d="m 137.55382,86.972408 72.47653,65.343002"
+       id="path8-93"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#0000ca;stroke-width:0.665;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#ConcaveTriangle-5-05)"
+       d="M 212.04351,139.24063 154.97539,88.735323"
+       id="path8-0"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#0000ca;stroke-width:0.665;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#ConcaveTriangle-5-62)"
+       d="M 216.2251,53.943322 C 127.99072,-118.19923 93.499596,13.208136 43.308676,55.940702"
+       id="path8-98"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#0000ca;stroke-width:0.665;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#ConcaveTriangle-5-82)"
+       d="M 37.030588,56.153541 C 98.838574,-85.10205 161.55229,-105.896 225.64076,56.153537"
+       id="path8-27"
+       sodipodi:nodetypes="cc" />
+  </g>
+</svg>
