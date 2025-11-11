@@ -260,7 +260,7 @@ GrB_Info analyze_graph(GrB_Matrix tx_edge_mat, GrB_Matrix owns_edge_mat, GrB_Vec
     // build user filters
     // ------------------------------------------------------------------------
 
-    // vertex filter: we will take only prersons over 30
+    // take persons over 30
     GrB_IndexUnaryOp user_age;
     TRY(GrB_IndexUnaryOp_new(&user_age, (GxB_index_unary_function)&check_user_age, GrB_BOOL, user, GrB_UINT8));
 
@@ -314,6 +314,9 @@ GrB_Info analyze_graph(GrB_Matrix tx_edge_mat, GrB_Matrix owns_edge_mat, GrB_Vec
     // apply cards filter to tx matrix
     // ------------------------------------------------------------------------
 
+    // receive transactions between cards of the "MIR" payment system for users over 30 years old
+
+    // create semiring to process A x B where A has type Card and B has type EdgeTX
     GrB_BinaryOp tx_bool_add_op;
     TRY(GrB_BinaryOp_new(&tx_bool_add_op, (GxB_binary_function)&tx_bool_add, tx_edge, tx_edge, tx_edge));
 
@@ -329,15 +332,20 @@ GrB_Info analyze_graph(GrB_Matrix tx_edge_mat, GrB_Matrix owns_edge_mat, GrB_Vec
 
     GrB_Matrix tx_mat_filtered;
     TRY(GrB_Matrix_new(&tx_mat_filtered, tx_edge, VERTICES_NUMBER, VERTICES_NUMBER));
+
+    // filter rows of source transactions matrix
     TRY(GrB_mxm(tx_mat_filtered, NULL, NULL, tx_bool_semiring, ID, tx_edge_mat, NULL));
 
+    // create semiring to process A x B where A has type EdgeTX and B has type Card
     GrB_Matrix tx_mat_filtered2;
     GrB_BinaryOp tx_bool_mul_right_op;
     TRY(GrB_BinaryOp_new(&tx_bool_mul_right_op, (GxB_binary_function)&tx_bool_mult_right, tx_edge, tx_edge, card));
 
     GrB_Semiring tx_bool_semiring_right;
     TRY(GrB_Semiring_new(&tx_bool_semiring_right, tx_bool_monoid, tx_bool_mul_right_op));
+
     TRY(GrB_Matrix_new(&tx_mat_filtered2, tx_edge, VERTICES_NUMBER, VERTICES_NUMBER));
+    // filter columns of source transactions matrix
     TRY(GrB_mxm(tx_mat_filtered2, NULL, NULL, tx_bool_semiring_right, tx_mat_filtered, ID, NULL));
 
     GxB_print(tx_mat_filtered2, GxB_COMPLETE);
