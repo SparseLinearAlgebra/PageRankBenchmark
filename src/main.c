@@ -265,7 +265,6 @@ GrB_Info analyze_graph(GrB_Matrix tx_edge_mat, GrB_Matrix owns_edge_mat, GrB_Vec
     // ------------------------------------------------------------------------
 
     // vertex filter: we will take only prersons over 30
-    GrB_Matrix ID;
     GrB_IndexUnaryOp user_age;
     TRY(GrB_IndexUnaryOp_new(&user_age, (GxB_index_unary_function)&check_user_age, GrB_BOOL, user, GrB_UINT8));
 
@@ -276,7 +275,6 @@ GrB_Info analyze_graph(GrB_Matrix tx_edge_mat, GrB_Matrix owns_edge_mat, GrB_Vec
     TRY(GrB_Vector_select_UDT(v, NULL, NULL, user_age, users, &age, NULL));
 
     GxB_print(v, GxB_COMPLETE);
-    TRY(GrB_Matrix_diag(&ID, v, 0));
 
     // ------------------------------------------------------------------------
     // apply user filters
@@ -288,26 +286,18 @@ GrB_Info analyze_graph(GrB_Matrix tx_edge_mat, GrB_Matrix owns_edge_mat, GrB_Vec
 
     GrB_Semiring user_filter_semiring;
     TRY(GrB_Semiring_new(&user_filter_semiring, GrB_LOR_MONOID_BOOL, user_filter_mul_op));
-    GrB_Matrix owns_mat_filtered;
-    TRY(GrB_Matrix_new(&owns_mat_filtered, GrB_BOOL, VERTICES_NUMBER, VERTICES_NUMBER));
-    // apply filter
-    TRY(GrB_mxm(owns_mat_filtered, NULL, NULL, user_filter_semiring, ID, owns_edge_mat, NULL));
-
-    // ------------------------------------------------------------------------
-    // get cards of filtered users
-    // ------------------------------------------------------------------------
-
     GrB_Vector filtered_cards;
     TRY(GrB_Vector_new(&filtered_cards, GrB_BOOL, VERTICES_NUMBER));
-    GxB_print(owns_mat_filtered, GxB_COMPLETE);
-    TRY(GrB_Matrix_reduce_Monoid(filtered_cards, NULL, NULL, GrB_LOR_MONOID_BOOL, owns_mat_filtered, GrB_DESC_T0));
+    // apply filter
+    TRY(GrB_vxm(filtered_cards, NULL, NULL, user_filter_semiring, v, owns_edge_mat, NULL));
+    GxB_print(filtered_cards, GxB_COMPLETE);
 
     // ------------------------------------------------------------------------
     // build filter for tx matrix
     // ------------------------------------------------------------------------
 
     // get cards with MIR payment system only
-    TRY(GrB_Matrix_free(&ID));
+    GrB_Matrix ID;
     TRY(GrB_Vector_free(&v));
     TRY(GrB_Vector_new(&v, card, VERTICES_NUMBER));
     GrB_IndexUnaryOp payment_system;
@@ -356,20 +346,6 @@ GrB_Info analyze_graph(GrB_Matrix tx_edge_mat, GrB_Matrix owns_edge_mat, GrB_Vec
 
     GxB_print(tx_mat_filtered2, GxB_COMPLETE);
 
-    GrB_UnaryOp tx_is_nonempty_op;
-    TRY(GxB_UnaryOp_new(&tx_is_nonempty_op, (GxB_unary_function)&tx_is_nonempty, GrB_BOOL, tx_edge, NULL, NULL));
-
-    GrB_Matrix keep;
-    TRY(GrB_Matrix_new(&keep, GrB_BOOL, VERTICES_NUMBER, VERTICES_NUMBER));
-    TRY(GrB_apply(keep, NULL, NULL, tx_is_nonempty_op, tx_mat_filtered2, NULL));
-    GxB_print(keep, GxB_COMPLETE);
-    GrB_Matrix tx_clean;
-    TRY(GrB_Matrix_new(&tx_clean, tx_edge, VERTICES_NUMBER, VERTICES_NUMBER));
-
-    TRY(GrB_assign(tx_clean, keep, NULL, tx_mat_filtered2, GrB_ALL, VERTICES_NUMBER, GrB_ALL, VERTICES_NUMBER, NULL));
-
-    GxB_print(tx_clean, GxB_COMPLETE);
-
     // ------------------------------------------------------------------------
     // build matrix for pagerank
     // ------------------------------------------------------------------------
@@ -379,7 +355,7 @@ GrB_Info analyze_graph(GrB_Matrix tx_edge_mat, GrB_Matrix owns_edge_mat, GrB_Vec
     TRY(GrB_UnaryOp_new(&mean_op, (GxB_unary_function)&F_op, GrB_FP64, tx_edge));
     GrB_Matrix Fmat;
     TRY(GrB_Matrix_new(&Fmat, GrB_FP64, VERTICES_NUMBER, VERTICES_NUMBER));
-    TRY(GrB_Matrix_apply(Fmat, NULL, NULL, mean_op, tx_clean, NULL));
+    TRY(GrB_Matrix_apply(Fmat, NULL, NULL, mean_op, tx_mat_filtered2, NULL));
     GxB_print(Fmat, GxB_COMPLETE);
 
     // apply exp function to every element of every element of matrix (lEXPmat)
@@ -426,6 +402,7 @@ GrB_Info analyze_graph(GrB_Matrix tx_edge_mat, GrB_Matrix owns_edge_mat, GrB_Vec
     // ------------------------------------------------------------------------
     // run pagerank
     // ------------------------------------------------------------------------
+
     int iteraions = 0;
     GrB_Vector pagerank_ans;
     TRY(GrB_Vector_new(&pagerank_ans, GrB_FP64, VERTICES_NUMBER));
@@ -439,9 +416,13 @@ GrB_Info analyze_graph(GrB_Matrix tx_edge_mat, GrB_Matrix owns_edge_mat, GrB_Vec
 
     TRY(banking_pagerank(&pagerank_ans, &iteraions, EXPSUMvec, G, 1e-4, 100));
     GxB_print(pagerank_ans, GxB_COMPLETE);
+
+    // ------------------------------------------------------------------------
+    // clean up
+    // ------------------------------------------------------------------------
+
     GrB_free(&ID);
     GrB_free(&v);
-    GrB_free(&owns_mat_filtered);
     GrB_free(&filtered_cards);
     GrB_free(&tx_bool_add_op);
     GrB_free(&tx_bool_mul_op);
@@ -451,9 +432,6 @@ GrB_Info analyze_graph(GrB_Matrix tx_edge_mat, GrB_Matrix owns_edge_mat, GrB_Vec
     GrB_free(&tx_bool_semiring_right);
     GrB_free(&tx_mat_filtered);
     GrB_free(&tx_mat_filtered2);
-    GrB_free(&tx_is_nonempty_op);
-    GrB_free(&keep);
-    GrB_free(&tx_clean);
     GrB_free(&mean_op);
     GrB_free(&exp_op);
     GrB_free(&Fmat);
@@ -476,7 +454,6 @@ int main()
 {
     LAGraph_Init(msg);
     printf("LAGraph initialized.\n\n");
-    // GxB_Global_Option_set(GxB_BURBLE);
 
     // ------------------------------------------------------------------------
     // init edge matrices
@@ -512,6 +489,11 @@ int main()
     // ------------------------------------------------------------------------
 
     TRY(analyze_graph(tx_edge_mat, owns_edge_mat, users, cards));
+
+    // ------------------------------------------------------------------------
+    // clean up
+    // ------------------------------------------------------------------------
+
     GrB_free(&tx_edge_mat);
     GrB_free(&owns_edge_mat);
     GrB_free(&users);
