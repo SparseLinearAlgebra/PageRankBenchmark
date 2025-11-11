@@ -205,7 +205,7 @@ GrB_Info init_vertices(GrB_Vector *users, GrB_Vector *cards)
     return GrB_SUCCESS;
 }
 
-int LAGr_PageRank_NoTeleport(
+int banking_pagerank(
     GrB_Vector *centrality,
     int *iters,
     const LAGraph_Graph G,
@@ -277,7 +277,7 @@ int LAGr_PageRank_NoTeleport(
     return GrB_SUCCESS;
 }
 
-GrB_Info banking_page_rank(GrB_Matrix tx_edge_mat, GrB_Matrix owns_edge_mat, GrB_Vector users, GrB_Vector cards)
+GrB_Info analyze_graph(GrB_Matrix tx_edge_mat, GrB_Matrix owns_edge_mat, GrB_Vector users, GrB_Vector cards)
 {
     // ------------------------------------------------------------------------
     // build user filters
@@ -445,7 +445,7 @@ GrB_Info banking_page_rank(GrB_Matrix tx_edge_mat, GrB_Matrix owns_edge_mat, GrB
 
     TRY(LAGraph_Cached_OutDegree(G, msg));
 
-    TRY(LAGr_PageRank_NoTeleport(&pagerank_ans, &iteraions, G, 1e-4, 100));
+    TRY(banking_pagerank(&pagerank_ans, &iteraions, G, 1e-4, 100));
     GxB_print(pagerank_ans, GxB_COMPLETE);
     GrB_free(&ID);
     GrB_free(&v);
@@ -518,7 +518,7 @@ int main()
     // run solver
     // ------------------------------------------------------------------------
 
-    TRY(banking_page_rank(tx_edge_mat, owns_edge_mat, users, cards));
+    TRY(analyze_graph(tx_edge_mat, owns_edge_mat, users, cards));
     GrB_free(&tx_edge_mat);
     GrB_free(&owns_edge_mat);
     GrB_free(&users);
