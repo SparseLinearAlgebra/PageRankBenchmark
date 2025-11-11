@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <stdint.h>
 #include "../vendor/GraphBLAS/Include/GraphBLAS.h"
-#include "../vendor/LAGraph/include/LAGraph.h"
-#include "../vendor/LAGraph/include/LAGraphX.h"
 
 #define TRY(method)                                                          \
     {                                                                        \
@@ -17,7 +15,6 @@
     }
 
 #define VERTICES_NUMBER 12
-char msg[LAGRAPH_MSG_LEN];
 
 typedef enum
 {
@@ -496,5 +493,5 @@ int main()
     GrB_free(&user);
     GrB_free(&card);
     GrB_free(&tx_edge);
-    LAGraph_Finalize(msg);
+    GrB_finalize();
 }
