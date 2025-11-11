@@ -118,6 +118,9 @@ void divide(double *z, const double *x, const double *y)
     *z = (*y != 0.0) ? (*x / *y) : 0.0;
 }
 
+GrB_Type user, card;
+GrB_Type tx_edge;
+
 GrB_Info init_edges(GrB_Matrix *tx_mat, GrB_Matrix *owns_mat)
 {
     GrB_Info info;
@@ -167,7 +170,7 @@ GrB_Info init_edges(GrB_Matrix *tx_mat, GrB_Matrix *owns_mat)
     TRY(GrB_Matrix_setElement_BOOL(*owns_mat, &edge1011, 9, 10));
     TRY(GrB_Matrix_setElement_BOOL(*owns_mat, &edge1012, 9, 11));
 
-    return info;
+    return GrB_SUCCESS;
 }
 
 GrB_Info init_vertices(GrB_Vector *users, GrB_Vector *cards)
@@ -201,53 +204,10 @@ GrB_Info init_vertices(GrB_Vector *users, GrB_Vector *cards)
     TRY(GrB_Vector_setElement_UDT(*cards, &card11, 10));
     TRY(GrB_Vector_setElement_UDT(*cards, &card12, 11));
 
-    return info;
+    return GrB_SUCCESS;
 }
 
-int main()
-{
-    // init graphblas
-    GrB_Info info = GrB_init(GrB_NONBLOCKING);
-    if (info != GrB_SUCCESS)
-    {
-        fprintf(stderr, "GraphBLAS init failed\n");
-        return 1;
-    }
-    printf("GraphBLAS initialized.\n");
-    LAGraph_Init(msg);
-    printf("LAGraph initialized.\n\n");
-
-    // ------------------------------------------------------------------------
-    // init edge matrices
-    // ------------------------------------------------------------------------
-
-    // custom type for transaction edges
-    GrB_Type tx_edge;
-    TRY(GrB_Type_new(&tx_edge, sizeof(EdgeTX)));
-
-    // edge decomposition
-
-    GrB_Matrix tx_edge_mat, owns_edge_mat;
-    TRY(GrB_Matrix_new(&tx_edge_mat, tx_edge, VERTICES_NUMBER, VERTICES_NUMBER));
-    TRY(GrB_Matrix_new(&owns_edge_mat, GrB_BOOL, VERTICES_NUMBER, VERTICES_NUMBER));
-    init_edges(&tx_edge_mat, &owns_edge_mat);
-
-    // ------------------------------------------------------------------------
-    // init vertices vectors
-    // ------------------------------------------------------------------------
-
-    GrB_Type user, card;
-    TRY(GrB_Type_new(&user, sizeof(User)));
-
-    TRY(GrB_Type_new(&card, sizeof(Card)));
-
-    GrB_Vector users;
-    TRY(GrB_Vector_new(&users, user, VERTICES_NUMBER));
-
-    GrB_Vector cards;
-    TRY(GrB_Vector_new(&cards, card, VERTICES_NUMBER));
-    TRY(init_vertices(&users, &cards));
-
+GrB_Info banking_page_rank(GrB_Matrix tx_edge_mat, GrB_Matrix owns_edge_mat, GrB_Vector users, GrB_Vector cards){
     // ------------------------------------------------------------------------
     // build user filters
     // ------------------------------------------------------------------------
@@ -416,4 +376,46 @@ int main()
 
     TRY(LAGr_PageRank(&pagerank_ans, &iteraions, G, 0.85, 1e-4, 100, msg));
     GxB_print(pagerank_ans, GxB_COMPLETE);
+}
+
+int main()
+{
+    LAGraph_Init(msg);
+    printf("LAGraph initialized.\n\n");
+
+    // ------------------------------------------------------------------------
+    // init edge matrices
+    // ------------------------------------------------------------------------
+
+    // custom type for transaction edges
+    TRY(GrB_Type_new(&tx_edge, sizeof(EdgeTX)));
+
+    // edge decomposition
+
+    GrB_Matrix tx_edge_mat, owns_edge_mat;
+    TRY(GrB_Matrix_new(&tx_edge_mat, tx_edge, VERTICES_NUMBER, VERTICES_NUMBER));
+    TRY(GrB_Matrix_new(&owns_edge_mat, GrB_BOOL, VERTICES_NUMBER, VERTICES_NUMBER));
+    init_edges(&tx_edge_mat, &owns_edge_mat);
+
+    // ------------------------------------------------------------------------
+    // init vertices vectors
+    // ------------------------------------------------------------------------
+
+    TRY(GrB_Type_new(&user, sizeof(User)));
+
+    TRY(GrB_Type_new(&card, sizeof(Card)));
+
+    GrB_Vector users;
+    TRY(GrB_Vector_new(&users, user, VERTICES_NUMBER));
+
+    GrB_Vector cards;
+    TRY(GrB_Vector_new(&cards, card, VERTICES_NUMBER));
+    TRY(init_vertices(&users, &cards));
+
+    // ------------------------------------------------------------------------
+    // run solver
+    // ------------------------------------------------------------------------
+
+    TRY(banking_page_rank(tx_edge_mat,owns_edge_mat,users,cards));
+
 }
