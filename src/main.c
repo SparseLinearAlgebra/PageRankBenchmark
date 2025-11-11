@@ -53,11 +53,17 @@ typedef struct
     uint32_t count;
 } EdgeTX;
 
-void check_user_age(bool *z, const User *x, GrB_Index _i, GrB_Index _j, const uint8_t *y) // EdgeOwns
+void check_user_age(bool *z, const User *x, GrB_Index i, GrB_Index j, const uint8_t *y)
 {
 
     *z = (x->age > *y);
 }
+
+bool user_filter_mul(bool *z, const User *x, const bool *y)
+{
+    *z = (x->age > 30) && (*y);
+}
+
 void check_payment_system(bool *z, const Card *x, GrB_Index _i, GrB_Index _j, const uint8_t *y)
 {
 
@@ -276,15 +282,15 @@ GrB_Info analyze_graph(GrB_Matrix tx_edge_mat, GrB_Matrix owns_edge_mat, GrB_Vec
 
     // vertex filter: we will take only prersons over 30
     GrB_Matrix ID;
-    GrB_Vector v;
-    TRY(GrB_Vector_new(&v, GrB_BOOL, VERTICES_NUMBER));
-    TRY(GrB_Vector_assign_BOOL(v, NULL, NULL, false, GrB_ALL, VERTICES_NUMBER, NULL));
-
-    // create selector
     GrB_IndexUnaryOp user_age;
     TRY(GrB_IndexUnaryOp_new(&user_age, (GxB_index_unary_function)&check_user_age, GrB_BOOL, user, GrB_UINT8));
+
     uint8_t age = 30;
-    TRY(GrB_Vector_apply_IndexOp_UDT(v, NULL, NULL, user_age, users, &age, NULL));
+    GrB_Vector v;
+    TRY(GrB_Vector_new(&v, user, VERTICES_NUMBER));
+
+    TRY(GrB_Vector_select_UDT(v, NULL, NULL, user_age, users, &age, NULL));
+
     GxB_print(v, GxB_COMPLETE);
     TRY(GrB_Matrix_diag(&ID, v, 0));
 
@@ -292,10 +298,16 @@ GrB_Info analyze_graph(GrB_Matrix tx_edge_mat, GrB_Matrix owns_edge_mat, GrB_Vec
     // apply user filters
     // ------------------------------------------------------------------------
 
+    GrB_BinaryOp user_filter_mul_op;
+    TRY(GrB_BinaryOp_new(&user_filter_mul_op, (GxB_binary_function)user_filter_mul,
+                         GrB_BOOL, user, GrB_BOOL));
+
+    GrB_Semiring user_filter_semiring;
+    TRY(GrB_Semiring_new(&user_filter_semiring, GrB_LOR_MONOID_BOOL, user_filter_mul_op));
     GrB_Matrix owns_mat_filtered;
     TRY(GrB_Matrix_new(&owns_mat_filtered, GrB_BOOL, VERTICES_NUMBER, VERTICES_NUMBER));
     // apply filter
-    TRY(GrB_mxm(owns_mat_filtered, NULL, NULL, GrB_LOR_LAND_SEMIRING_BOOL, ID, owns_edge_mat, NULL));
+    TRY(GrB_mxm(owns_mat_filtered, NULL, NULL, user_filter_semiring, ID, owns_edge_mat, NULL));
 
     // ------------------------------------------------------------------------
     // get cards of filtered users
@@ -475,6 +487,7 @@ int main()
 {
     LAGraph_Init(msg);
     printf("LAGraph initialized.\n\n");
+    // GxB_Global_Option_set(GxB_BURBLE);
 
     // ------------------------------------------------------------------------
     // init edge matrices
